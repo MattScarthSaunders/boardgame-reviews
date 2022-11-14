@@ -58,9 +58,26 @@ describe("GET", () => {
           });
         });
     });
+    test("GET 200 /api/reviews/:review_id: should respond with a single review object of correct ID", () => {
+      return request(app)
+        .get("/api/reviews/1")
+        .expect(200)
+        .then((res) => {
+          expect(res.body.review).toEqual({
+            review_id: 1,
+            title: expect.any(String),
+            review_body: expect.any(String),
+            designer: expect.any(String),
+            review_img_url: expect.any(String),
+            votes: expect.any(Number),
+            category: expect.any(String),
+            owner: expect.any(String),
+            created_at: expect.any(String),
+          });
+        });
+    });
   });
 
-  //covers /categories and /reviews GETs, as well as any route typo.
   describe("Errors", () => {
     test("GET 404 - route that does not exist", () => {
       return request(app)
@@ -68,6 +85,22 @@ describe("GET", () => {
         .expect(404)
         .then((res) => {
           expect(res.body.msg).toBe("Invalid URL");
+        });
+    });
+    test("GET 400 - invalid review id", () => {
+      return request(app)
+        .get("/api/reviews/slippers")
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Invalid Id");
+        });
+    });
+    test("GET 404 - valid but out of bounds review id", () => {
+      return request(app)
+        .get("/api/reviews/9001")
+        .expect(404)
+        .then((res) => {
+          expect(res.body.msg).toBe("ID not found");
         });
     });
   });
