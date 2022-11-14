@@ -76,6 +76,30 @@ describe("GET", () => {
           });
         });
     });
+    test("GET 200 /api/reviews/:review_id/comments - should respond with array of comments for given review, sorted by date", () => {
+      return request(app)
+        .get("/api/reviews/3/comments")
+        .expect(200)
+        .then((res) => {
+          expect(res.body.comments).toBeInstanceOf(Array);
+          expect(res.body.comments).toHaveLength(3);
+          expect(res.body.comments).toBeSortedBy("created_at", {
+            descending: true,
+          });
+          res.body.comments.forEach((comment) => {
+            expect(comment).toEqual(
+              expect.objectContaining({
+                comment_id: expect.any(Number),
+                votes: expect.any(Number),
+                created_at: expect.any(String),
+                author: expect.any(String),
+                body: expect.any(String),
+                review_id: expect.any(Number),
+              })
+            );
+          });
+        });
+    });
   });
 
   describe("Errors", () => {
@@ -102,6 +126,17 @@ describe("GET", () => {
         .then((res) => {
           expect(res.body.msg).toBe("ID not found");
         });
+    });
+    test("GET 400 - invalid id for comment query", () => {
+      return request(app)
+        .get("/api/reviews/slippers/comments")
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Invalid Id");
+        });
+    });
+    test("GET 204 - returns no content if no query matches or id valid but out of bounds", () => {
+      return request(app).get("/api/reviews/9001/comments").expect(204);
     });
   });
 });
