@@ -59,6 +59,8 @@ describe("GET", () => {
         });
     });
   });
+
+  //covers /categories and /reviews GETs, as well as any route typo.
   describe("Errors", () => {
     test("GET 404 - route that does not exist", () => {
       return request(app)
