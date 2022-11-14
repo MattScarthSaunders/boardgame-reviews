@@ -1,6 +1,8 @@
 const express = require("express");
 const { catchAll, invalidURL } = require("./controllers/errors.controllers.js");
-const { getCategories } = require("./controllers/games.controllers.js");
+const {
+  getCategories,
+} = require("./controllers/games.categories.controllers.js");
 const app = express();
 
 app.get("/api/categories", getCategories);
