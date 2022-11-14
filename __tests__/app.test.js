@@ -59,5 +59,21 @@ describe("GET", () => {
           expect(res.body.msg).toBe("Invalid URL");
         });
     });
+    test("GET 400 - invalid review id", () => {
+      return request(app)
+        .get("/api/reviews/slippers")
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Invalid Id");
+        });
+    });
+    test("GET 404 - valid but out of bounds review id", () => {
+      return request(app)
+        .get("/api/reviews/9001")
+        .expect(404)
+        .then((res) => {
+          expect(res.body.msg).toBe("ID not found");
+        });
+    });
   });
 });
