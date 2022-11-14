@@ -31,4 +31,14 @@ describe("GET", () => {
         });
     });
   });
+  describe("Errors", () => {
+    test("GET 404 - route that does not exist", () => {
+      return request(app)
+        .get("/api/dinosaurs")
+        .expect(404)
+        .then((res) => {
+          expect(res.body.msg).toBe("Invalid URL");
+        });
+    });
+  });
 });
