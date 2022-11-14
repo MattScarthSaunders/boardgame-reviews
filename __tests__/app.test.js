@@ -31,6 +31,33 @@ describe("GET", () => {
           });
         });
     });
+    test("GET 200: should respond with an array of review objects with correct props, sorted by date DESC", () => {
+      return request(app)
+        .get("/api/reviews")
+        .expect(200)
+        .then((res) => {
+          expect(res.body.reviews).toBeInstanceOf(Array);
+          expect(res.body.reviews).toHaveLength(13);
+          expect(res.body.reviews).toBeSortedBy("created_at", {
+            descending: true,
+          });
+          res.body.reviews.forEach((review) => {
+            expect(review).toEqual(
+              expect.objectContaining({
+                review_id: expect.any(Number),
+                owner: expect.any(String),
+                title: expect.any(String),
+                category: expect.any(String),
+                review_img_url: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                designer: expect.any(String),
+                comment_count: expect.any(Number),
+              })
+            );
+          });
+        });
+    });
     test("GET 200 /api/reviews/:review_id: should respond with a single review object of correct ID", () => {
       return request(app)
         .get("/api/reviews/1")
@@ -50,6 +77,7 @@ describe("GET", () => {
         });
     });
   });
+
   describe("Errors", () => {
     test("GET 404 - route that does not exist", () => {
       return request(app)
