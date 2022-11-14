@@ -20,6 +20,7 @@ describe("GET", () => {
         .expect(200)
         .then((res) => {
           expect(res.body.categories).toBeInstanceOf(Array);
+          expect(res.body.categories).toHaveLength(4);
           res.body.categories.forEach((category) => {
             expect(category).toEqual(
               expect.objectContaining({
