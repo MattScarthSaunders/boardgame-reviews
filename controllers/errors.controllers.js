@@ -15,7 +15,7 @@ exports.invalidId = (err, req, res, next) => {
   }
 };
 
-exports.idNotFound = (err, req, res, next) => {
+exports.customErrors = (err, req, res, next) => {
   if (err.status) {
     res.status(err.status).send({ msg: err.msg });
   } else {

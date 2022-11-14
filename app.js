@@ -3,7 +3,7 @@ const {
   catchAll,
   invalidURL,
   invalidId,
-  idNotFound,
+  customErrors,
 } = require("./controllers/errors.controllers.js");
 const { getCategories } = require("./controllers/categories.controllers.js");
 const {
@@ -19,7 +19,7 @@ app.get("/api/reviews/:review_id", getReviewById);
 //Errors
 
 app.use(invalidId);
-app.use(idNotFound);
+app.use(customErrors);
 
 app.all("/*", invalidURL);
 app.use(catchAll);

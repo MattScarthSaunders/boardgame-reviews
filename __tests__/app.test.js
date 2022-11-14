@@ -65,12 +65,12 @@ describe("GET", () => {
         .then((res) => {
           expect(res.body.review).toEqual({
             review_id: 1,
-            title: expect.any(String),
+            title: "Agricola",
+            designer: "Uwe Rosenberg",
             review_body: expect.any(String),
-            designer: expect.any(String),
             review_img_url: expect.any(String),
             votes: expect.any(Number),
-            category: expect.any(String),
+            category: "euro game",
             owner: expect.any(String),
             created_at: expect.any(String),
           });
