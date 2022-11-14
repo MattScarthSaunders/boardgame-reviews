@@ -31,6 +31,24 @@ describe("GET", () => {
           });
         });
     });
+    test("GET 200 /api/reviews/:review_id: should respond with a single review object of correct ID", () => {
+      return request(app)
+        .get("/api/reviews/1")
+        .expect(200)
+        .then((res) => {
+          expect(res.body.review).toEqual({
+            review_id: 1,
+            title: expect.any(String),
+            review_body: expect.any(String),
+            designer: expect.any(String),
+            review_img_url: expect.any(String),
+            votes: expect.any(Number),
+            category: expect.any(String),
+            owner: expect.any(String),
+            created_at: expect.any(String),
+          });
+        });
+    });
   });
   describe("Errors", () => {
     test("GET 404 - route that does not exist", () => {
