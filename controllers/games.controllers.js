@@ -14,3 +14,4 @@ exports.getReviews = (req, res) => {
     res.status(200).send({ reviews });
   });
 };
+const {} = require("../models/games.models.js");

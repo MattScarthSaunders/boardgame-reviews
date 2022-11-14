@@ -4,6 +4,7 @@ const {
   getCategories,
   getReviews,
 } = require("./controllers/games.controllers.js");
+} = require("./controllers/games.categories.controllers.js");
 const app = express();
 
 app.get("/api/categories", getCategories);
