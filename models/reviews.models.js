@@ -17,8 +17,7 @@ exports.selectReviews = () => {
 exports.selectReviewById = (review_id) => {
   return db
     .query(
-      `SELECT reviews.*, categories.slug AS category FROM reviews
-    JOIN categories ON reviews.category = categories.slug
+      `SELECT * FROM reviews
     WHERE review_id = $1;`,
       [review_id]
     )
