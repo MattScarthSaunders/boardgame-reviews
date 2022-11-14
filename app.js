@@ -1,3 +1,7 @@
 const express = require("express");
-const {} = require("./controllers/games.js");
+const { getCategories } = require("./controllers/games.controllers.js");
 const app = express();
+
+app.get("/api/categories", getCategories);
+
+module.exports = app;
