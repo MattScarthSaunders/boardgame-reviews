@@ -238,7 +238,7 @@ describe("PATCH", () => {
         .send({ inc_votes: 1 })
         .expect(200)
         .then((res) => {
-          expect(res.body.review.votes).toBe(1);
+          expect(res.body.review.votes).toBe(2);
         });
     });
   });
