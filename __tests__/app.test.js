@@ -161,3 +161,95 @@ describe("GET", () => {
     });
   });
 });
+
+describe("POST", () => {
+  describe("functionality", () => {
+    test("POST 201 - can post a new comment to a review", () => {
+      return request(app)
+        .post("/api/reviews/1/comments")
+        .send({
+          username: "mallionaire",
+          body: "This boardgame is great, 10/10 would boardgame again.",
+        })
+        .expect(201)
+        .then((res) => {
+          expect(res.body.comment).toEqual({
+            username: "mallionaire",
+            body: "This boardgame is great, 10/10 would boardgame again.",
+          });
+        });
+    });
+  });
+  describe("errors", () => {
+    test("POST 400 - invalid review id", () => {
+      return request(app)
+        .post("/api/reviews/pippin/comments")
+        .send({
+          username: "mallionaire",
+          body: "This boardgame is great, 10/10 would boardgame again.",
+        })
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Invalid Id");
+        });
+    });
+    test("POST 404 - valid id but out of bounds", () => {
+      return request(app)
+        .post("/api/reviews/9001/comments")
+        .send({
+          username: "mallionaire",
+          body: "This boardgame is great, 10/10 would boardgame again.",
+        })
+        .expect(404)
+        .then((res) => {
+          expect(res.body.msg).toBe("Content not found");
+        });
+    });
+    test("POST 400 - missing body", () => {
+      return request(app)
+        .post("/api/reviews/1/comments")
+        .send({
+          username: "mallionaire",
+        })
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Bad Post Content");
+        });
+    });
+    test("POST 400 - missing username", () => {
+      return request(app)
+        .post("/api/reviews/1/comments")
+        .send({
+          body: "very insightful comment",
+        })
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Bad Post Content");
+        });
+    });
+    test("POST 400 - bad username", () => {
+      return request(app)
+        .post("/api/reviews/1/comments")
+        .send({
+          userna1me: "mallionaire",
+          body: "very insightful comment",
+        })
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Bad Post Content");
+        });
+    });
+    test("POST 400 - bad body", () => {
+      return request(app)
+        .post("/api/reviews/1/comments")
+        .send({
+          username: "mallionaire",
+          cbody: "very insightful comment",
+        })
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Bad Post Content");
+        });
+    });
+  });
+});

@@ -15,6 +15,14 @@ exports.invalidId = (err, req, res, next) => {
   }
 };
 
+exports.invalidPostContent = (err, req, res, next) => {
+  if (err.code === "23502") {
+    res.status(400).send({ msg: "Bad Post Content" });
+  } else {
+    next(err);
+  }
+};
+
 exports.customErrors = (err, req, res, next) => {
   if (err.status && err.msg) {
     res.status(err.status).send({ msg: err.msg });
