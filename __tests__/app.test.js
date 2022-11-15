@@ -229,3 +229,18 @@ describe("POST", () => {
     });
   });
 });
+
+describe("PATCH", () => {
+  describe("functionality", () => {
+    test("PATCH 200 - should update vote count of given review (positive)", () => {
+      return request(app)
+        .patch("/api/reviews/1")
+        .send({ inc_votes: 1 })
+        .expect(200)
+        .then((res) => {
+          expect(res.body.review.votes).toBe(1);
+        });
+    });
+  });
+  describe("Errors", () => {});
+});
