@@ -29,3 +29,20 @@ exports.selectReviewById = (review_id) => {
       }
     });
 };
+
+exports.insertComment = (review_id, body, username) => {
+  const dateNow = new Date(new Date());
+  return db
+    .query(
+      `
+  INSERT INTO comments
+    (body, votes, author, review_id, created_at)
+  VALUES
+    ($1,0,$2,$3,$4)
+  RETURNING author AS username, body`,
+      [body, username, review_id, dateNow]
+    )
+    .then((comment) => {
+      return comment.rows[0];
+    });
+};

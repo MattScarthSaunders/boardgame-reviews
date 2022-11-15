@@ -105,3 +105,24 @@ describe("GET", () => {
     });
   });
 });
+
+describe("POST", () => {
+  describe("functionality", () => {
+    test("POST 201 - can post a new comment to a review", () => {
+      return request(app)
+        .post("/api/reviews/1/comments")
+        .send({
+          username: "mallionaire",
+          body: "This boardgame is great, 10/10 would boardgame again.",
+        })
+        .expect(201)
+        .then((res) => {
+          expect(res.body.comment).toEqual({
+            username: "mallionaire",
+            body: "This boardgame is great, 10/10 would boardgame again.",
+          });
+        });
+    });
+  });
+  describe("errors", () => {});
+});

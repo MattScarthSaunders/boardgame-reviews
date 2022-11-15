@@ -9,13 +9,16 @@ const { getCategories } = require("./controllers/categories.controllers.js");
 const {
   getReviews,
   getReviewById,
+  postCommentToReview,
 } = require("./controllers/reviews.controllers.js");
 const app = express();
+app.use(express.json());
 
 app.get("/api/categories", getCategories);
 app.get("/api/reviews", getReviews);
 app.get("/api/reviews/:review_id", getReviewById);
 
+app.post("/api/reviews/:review_id/comments", postCommentToReview);
 //Errors
 
 app.use(invalidId);
