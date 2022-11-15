@@ -216,11 +216,35 @@ describe("POST", () => {
           expect(res.body.msg).toBe("Bad Post Content");
         });
     });
-    test("POST 400 - missing/bad username", () => {
+    test("POST 400 - missing username", () => {
       return request(app)
         .post("/api/reviews/1/comments")
         .send({
           body: "very insightful comment",
+        })
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Bad Post Content");
+        });
+    });
+    test("POST 400 - bad username", () => {
+      return request(app)
+        .post("/api/reviews/1/comments")
+        .send({
+          userna1me: "mallionaire",
+          body: "very insightful comment",
+        })
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Bad Post Content");
+        });
+    });
+    test("POST 400 - bad body", () => {
+      return request(app)
+        .post("/api/reviews/1/comments")
+        .send({
+          username: "mallionaire",
+          cbody: "very insightful comment",
         })
         .expect(400)
         .then((res) => {
