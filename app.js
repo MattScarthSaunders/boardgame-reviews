@@ -4,6 +4,8 @@ const {
   invalidURL,
   invalidId,
   customErrors,
+  insertionOutOfBounds,
+  invalidPostContent,
 } = require("./controllers/errors.controllers.js");
 const { getCategories } = require("./controllers/categories.controllers.js");
 const {
@@ -24,6 +26,8 @@ app.post("/api/reviews/:review_id/comments", postCommentToReview);
 //Errors
 
 app.use(invalidId);
+app.use(invalidPostContent);
+app.use(insertionOutOfBounds);
 app.use(customErrors);
 
 app.all("/*", invalidURL);
