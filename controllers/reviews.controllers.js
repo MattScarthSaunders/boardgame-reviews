@@ -1,8 +1,8 @@
+const { checkExists } = require("../utils/utils.js");
 const {
   selectReviews,
   selectReviewById,
   selectCommentsByReview,
-  checkReviewExists,
 } = require("../models/reviews.models.js");
 
 exports.getReviews = (req, res) => {
@@ -22,7 +22,7 @@ exports.getReviewById = (req, res, next) => {
 
 exports.getCommentsByReview = (req, res, next) => {
   const { review_id } = req.params;
-  checkReviewExists(review_id)
+  checkExists("reviews", "review_id", review_id)
     .then(() => {
       return selectCommentsByReview(review_id);
     })

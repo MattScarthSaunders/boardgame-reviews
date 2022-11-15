@@ -30,16 +30,6 @@ exports.selectReviewById = (review_id) => {
     });
 };
 
-exports.checkReviewExists = (review_id) => {
-  return db
-    .query(`SELECT * FROM reviews WHERE review_id =$1`, [review_id])
-    .then((reviews) => {
-      if (!reviews.rows.length) {
-        return Promise.reject({ status: 404, msg: "Review not found" });
-      }
-    });
-};
-
 exports.selectCommentsByReview = (review_id) => {
   return db
     .query(
