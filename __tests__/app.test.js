@@ -60,19 +60,20 @@ describe("GET", () => {
     });
     test("GET 200 /api/reviews/:review_id: should respond with a single review object of correct ID", () => {
       return request(app)
-        .get("/api/reviews/1")
+        .get("/api/reviews/3")
         .expect(200)
         .then((res) => {
           expect(res.body.review).toEqual({
-            review_id: 1,
-            title: "Agricola",
-            designer: "Uwe Rosenberg",
+            review_id: 3,
+            title: "Ultimate Werewolf",
+            designer: "Akihisa Okui",
             review_body: expect.any(String),
             review_img_url: expect.any(String),
             votes: expect.any(Number),
-            category: "euro game",
+            category: "social deduction",
             owner: expect.any(String),
             created_at: expect.any(String),
+            comment_count: 3,
           });
         });
     });
