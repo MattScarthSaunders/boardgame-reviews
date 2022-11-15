@@ -2,6 +2,7 @@ const {
   selectReviews,
   selectReviewById,
   selectCommentsByReview,
+  checkReviewExists,
 } = require("../models/reviews.models.js");
 
 exports.getReviews = (req, res) => {
@@ -21,10 +22,12 @@ exports.getReviewById = (req, res, next) => {
 
 exports.getCommentsByReview = (req, res, next) => {
   const { review_id } = req.params;
-  selectCommentsByReview(review_id)
+  checkReviewExists(review_id)
+    .then(() => {
+      return selectCommentsByReview(review_id);
+    })
     .then((comments) => {
-      if (!comments.length) res.status(204);
-      res.send({ comments });
+      res.status(200).send({ comments });
     })
     .catch(next);
 };

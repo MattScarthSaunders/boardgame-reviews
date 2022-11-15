@@ -100,8 +100,14 @@ describe("GET", () => {
           });
         });
     });
-    test("GET 204 - returns no content if no query matches", () => {
-      return request(app).get("/api/reviews/7/comments").expect(204);
+    test("GET 200 - returns an empty array if no matches", () => {
+      return request(app)
+        .get("/api/reviews/7/comments")
+        .expect(200)
+        .then((res) => {
+          expect(res.body.comments).toBeInstanceOf(Array);
+          expect(res.body.comments).toHaveLength(0);
+        });
     });
   });
 });
@@ -139,7 +145,12 @@ describe("Errors", () => {
         expect(res.body.msg).toBe("Invalid Id");
       });
   });
-  test("GET 204 - returns no content if id valid but out of bounds", () => {
-    return request(app).get("/api/reviews/9001/comments").expect(204);
+  test("GET 404 - returns no comment array and correct error message if id valid but out of bounds", () => {
+    return request(app)
+      .get("/api/reviews/9001/comments")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("Review not found");
+      });
   });
 });
