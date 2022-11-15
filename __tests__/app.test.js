@@ -117,6 +117,24 @@ describe("GET", () => {
           expect(res.body.comments).toHaveLength(0);
         });
     });
+    test("GET 200 - /api/users returns an array of user objects", () => {
+      return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then((res) => {
+          expect(res.body.users).toBeInstanceOf(Array);
+          expect(res.body.users).toHaveLength(4);
+          res.body.users.forEach((user) => {
+            expect(user).toEqual(
+              expect.objectContaining({
+                username: expect.any(String),
+                name: expect.any(String),
+                avatar_url: expect.any(String),
+              })
+            );
+          });
+        });
+    });
   });
   describe("Errors", () => {
     test("GET 404 - route that does not exist", () => {
