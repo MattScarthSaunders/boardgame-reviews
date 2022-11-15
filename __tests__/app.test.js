@@ -202,5 +202,14 @@ describe("PATCH", () => {
           expect(res.body.msg).toBe("Received invalid content");
         });
     });
+    test("PATCH 400 - body prop typo", () => {
+      return request(app)
+        .patch("/api/reviews/1")
+        .send({ inc_vetes: 1 })
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Received invalid content");
+        });
+    });
   });
 });
