@@ -1,8 +1,8 @@
-const { checkExists } = require("../utils/utils.js");
 const {
   selectReviews,
   selectReviewById,
   selectCommentsByReview,
+  updateReview,
 } = require("../models/reviews.models.js");
 
 exports.getReviews = (req, res) => {
@@ -28,4 +28,17 @@ exports.getCommentsByReview = (req, res, next) => {
       res.status(200).send({ comments });
     })
     .catch(next);
+};
+
+exports.patchReview = (req, res, next) => {
+  const { review_id } = req.params;
+  const { inc_votes } = req.body;
+  updateReview(review_id, inc_votes)
+    .then((review) => {
+      res.status(200).send({ review });
+    })
+    .catch((err) => {
+      console.log(err);
+      next(err);
+    });
 };

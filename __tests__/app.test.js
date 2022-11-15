@@ -161,3 +161,37 @@ describe("GET", () => {
     });
   });
 });
+
+describe("PATCH", () => {
+  describe("functionality", () => {
+    test("PATCH 200 - should update vote count of given review (positive)", () => {
+      return request(app)
+        .patch("/api/reviews/1")
+        .send({ inc_votes: 1 })
+        .expect(200)
+        .then((res) => {
+          expect(res.body.review.votes).toBe(2);
+        });
+    });
+  });
+  describe("Errors", () => {
+    test("PATCH 400 - invalid review id", () => {
+      return request(app)
+        .patch("/api/reviews/spaniel")
+        .send({ inc_votes: 1 })
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Invalid Id");
+        });
+    });
+    test("PATCH 404 - valid id but out of bounds", () => {
+      return request(app)
+        .patch("/api/reviews/9001")
+        .send({ inc_votes: 1 })
+        .expect(404)
+        .then((res) => {
+          expect(res.body.msg).toBe("Content not found");
+        });
+    });
+  });
+});

@@ -44,3 +44,20 @@ exports.selectCommentsByReview = (review_id) => {
     return checkedComments[1].rows;
   });
 };
+
+exports.updateReview = (review_id, inc_votes) => {
+  return Promise.all([
+    checkExists("reviews", "review_id", review_id),
+    db.query(
+      `
+        UPDATE reviews
+        SET votes = votes + $1
+        WHERE review_id = $2
+        RETURNING *;
+        `,
+      [inc_votes, review_id]
+    ),
+  ]).then((review) => {
+    return review[1].rows[0];
+  });
+};
