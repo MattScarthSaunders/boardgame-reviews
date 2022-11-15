@@ -30,6 +30,17 @@ exports.getCommentsByReview = (req, res, next) => {
     .catch(next);
 };
 
+exports.postCommentToReview = (req, res, next) => {
+  const { review_id } = req.params;
+  const { username, body } = req.body;
+
+  insertComment(review_id, body, username)
+    .then((comment) => {
+      res.status(201).send({ comment });
+    })
+    .catch(next);
+};
+
 exports.patchReview = (req, res, next) => {
   const { review_id } = req.params;
   const { inc_votes } = req.body;

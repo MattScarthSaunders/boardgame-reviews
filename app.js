@@ -12,6 +12,7 @@ const {
   getReviewById,
   getCommentsByReview,
   patchReview,
+  postCommentToReview,
 } = require("./controllers/reviews.controllers.js");
 const app = express();
 app.use(express.json());
@@ -22,7 +23,7 @@ app.get("/api/reviews/:review_id", getReviewById);
 app.get("/api/reviews/:review_id/comments", getCommentsByReview);
 
 app.patch("/api/reviews/:review_id", patchReview);
-// app.post("/api/reviews/:review_id/comments", postCommentToReview);
+app.post("/api/reviews/:review_id/comments", postCommentToReview);
 
 //Errors
 
