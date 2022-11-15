@@ -62,8 +62,9 @@ exports.insertComment = (review_id, body, username) => {
 };
 
 exports.updateReview = (review_id, inc_votes) => {
-  return db
-    .query(
+  return Promise.all([
+    checkExists("reviews", "review_id", review_id),
+    db.query(
       `
       UPDATE reviews
       SET votes = votes + $1
@@ -71,8 +72,8 @@ exports.updateReview = (review_id, inc_votes) => {
       RETURNING *;
       `,
       [inc_votes, review_id]
-    )
-    .then((review) => {
-      return review.rows[0];
-    });
+    ),
+  ]).then((review) => {
+    return review[1].rows[0];
+  });
 };
