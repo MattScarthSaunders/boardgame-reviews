@@ -46,6 +46,9 @@ exports.selectCommentsByReview = (review_id) => {
 };
 
 exports.updateReview = (review_id, inc_votes) => {
+  if (!inc_votes) {
+    return Promise.reject({ status: 400, msg: "Bad patch body" });
+  }
   return Promise.all([
     checkExists("reviews", "review_id", review_id),
     db.query(
