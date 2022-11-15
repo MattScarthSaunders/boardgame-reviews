@@ -98,6 +98,14 @@ describe("GET", () => {
               })
             );
           });
+          expect(res.body.comments[0]).toEqual({
+            comment_id: 6,
+            body: "Not sure about dogs, but my cat likes to get involved with board games, the boxes are their particular favourite",
+            votes: 10,
+            author: "philippaclaire9",
+            review_id: 3,
+            created_at: "2021-03-27T19:49:48.110Z",
+          });
         });
     });
     test("GET 200 - returns an empty array if no matches", () => {
