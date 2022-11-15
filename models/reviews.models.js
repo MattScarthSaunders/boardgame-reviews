@@ -54,9 +54,10 @@ exports.insertComment = (review_id, body, username) => {
     ($1,0,$2,$3,$4)
   RETURNING author AS username, body;`;
 
-  return db
-    .query(queryString, [body, username, review_id, dateNow])
-    .then((comment) => {
-      return comment.rows[0];
-    });
+  return Promise.all([
+    checkExists("reviews", "review_id", review_id),
+    db.query(queryString, [body, username, review_id, dateNow]),
+  ]).then((comment) => {
+    return comment[1].rows[0];
+  });
 };

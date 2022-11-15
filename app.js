@@ -27,7 +27,6 @@ app.post("/api/reviews/:review_id/comments", postCommentToReview);
 
 app.use(invalidId);
 app.use(invalidPostContent);
-app.use(insertionOutOfBounds);
 app.use(customErrors);
 
 app.all("/*", invalidURL);
