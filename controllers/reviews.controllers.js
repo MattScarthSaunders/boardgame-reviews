@@ -38,7 +38,6 @@ exports.patchReview = (req, res, next) => {
       res.status(200).send({ review });
     })
     .catch((err) => {
-      console.log(err);
       next(err);
     });
 };
