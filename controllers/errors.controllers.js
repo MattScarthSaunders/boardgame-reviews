@@ -1,3 +1,5 @@
+const { checkExists } = require("../utils/utils");
+
 exports.catchAll = (err, req, res, next) => {
   console.log(err, "unhandled error");
   res.status(500).send({ msg: "internal server error" });
@@ -15,9 +17,9 @@ exports.invalidId = (err, req, res, next) => {
   }
 };
 
-exports.invalidPostContent = (err, req, res, next) => {
+exports.invalidContent = (err, req, res, next) => {
   if (err.code === "23502") {
-    res.status(400).send({ msg: "Bad Post Content" });
+    res.status(400).send({ msg: "Received invalid content" });
   } else {
     next(err);
   }

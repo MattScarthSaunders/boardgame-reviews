@@ -213,7 +213,7 @@ describe("POST", () => {
         })
         .expect(400)
         .then((res) => {
-          expect(res.body.msg).toBe("Bad Post Content");
+          expect(res.body.msg).toBe("Received invalid content");
         });
     });
     test("POST 400 - missing username", () => {
@@ -224,7 +224,7 @@ describe("POST", () => {
         })
         .expect(400)
         .then((res) => {
-          expect(res.body.msg).toBe("Bad Post Content");
+          expect(res.body.msg).toBe("Received invalid content");
         });
     });
     test("POST 400 - bad username", () => {
@@ -236,7 +236,7 @@ describe("POST", () => {
         })
         .expect(400)
         .then((res) => {
-          expect(res.body.msg).toBe("Bad Post Content");
+          expect(res.body.msg).toBe("Received invalid content");
         });
     });
     test("POST 400 - bad body", () => {
@@ -248,7 +248,77 @@ describe("POST", () => {
         })
         .expect(400)
         .then((res) => {
-          expect(res.body.msg).toBe("Bad Post Content");
+          expect(res.body.msg).toBe("Received invalid content");
+        });
+    });
+  });
+});
+
+describe("PATCH", () => {
+  describe("functionality", () => {
+    test("PATCH 200 - should update vote count of given review (positive)", () => {
+      return request(app)
+        .patch("/api/reviews/1")
+        .send({ inc_votes: 1 })
+        .expect(200)
+        .then((res) => {
+          expect(res.body.review.votes).toBe(2);
+        });
+    });
+    test("PATCH 200 - should handle negative values", () => {
+      return request(app)
+        .patch("/api/reviews/1")
+        .send({ inc_votes: -100 })
+        .expect(200)
+        .then((res) => {
+          expect(res.body.review.votes).toBe(-99);
+        });
+    });
+  });
+  describe("Errors", () => {
+    test("PATCH 400 - invalid review id", () => {
+      return request(app)
+        .patch("/api/reviews/spaniel")
+        .send({ inc_votes: 1 })
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Invalid Id");
+        });
+    });
+    test("PATCH 404 - valid id but out of bounds", () => {
+      return request(app)
+        .patch("/api/reviews/9001")
+        .send({ inc_votes: 1 })
+        .expect(404)
+        .then((res) => {
+          expect(res.body.msg).toBe("Content not found");
+        });
+    });
+    test("PATCH 400 - body missing", () => {
+      return request(app)
+        .patch("/api/reviews/1")
+        .send({})
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Received invalid content");
+        });
+    });
+    test("PATCH 400 - body prop typo", () => {
+      return request(app)
+        .patch("/api/reviews/1")
+        .send({ inc_vetes: 1 })
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Received invalid content");
+        });
+    });
+    test("PATCH 400 - bad body prop value", () => {
+      return request(app)
+        .patch("/api/reviews/1")
+        .send({ inc_vetes: "slime" })
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Received invalid content");
         });
     });
   });
