@@ -22,6 +22,7 @@ app.get("/api/reviews/:review_id", getReviewById);
 app.get("/api/reviews/:review_id/comments", getCommentsByReview);
 
 app.patch("/api/reviews/:review_id", patchReview);
+// app.post("/api/reviews/:review_id/comments", postCommentToReview);
 
 //Errors
 
