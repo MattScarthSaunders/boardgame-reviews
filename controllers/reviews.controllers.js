@@ -7,8 +7,8 @@ const {
 } = require("../models/reviews.models.js");
 
 exports.getReviews = (req, res) => {
-  const { dexterity } = req.query;
-  selectReviews(dexterity).then((reviews) => {
+  const { sort_by, order, category } = req.query;
+  selectReviews(sort_by, order, category).then((reviews) => {
     res.status(200).send({ reviews });
   });
 };
