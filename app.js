@@ -25,8 +25,6 @@ app.get("/api/reviews/:review_id/comments", getCommentsByReview);
 
 app.post("/api/reviews/:review_id/comments", postCommentToReview);
 
-app.patch("/api/reviews/:review_id", patchReview);
-
 //Errors
 
 app.use(invalidId);
