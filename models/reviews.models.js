@@ -45,6 +45,23 @@ exports.selectCommentsByReview = (review_id) => {
   });
 };
 
+exports.insertComment = (review_id, body, username) => {
+  const dateNow = new Date(new Date());
+  const queryString = `
+  INSERT INTO comments
+    (body, votes, author, review_id, created_at)
+  VALUES
+    ($1,0,$2,$3,$4)
+  RETURNING author AS username, body;`;
+
+  return Promise.all([
+    checkExists("reviews", "review_id", review_id),
+    db.query(queryString, [body, username, review_id, dateNow]),
+  ]).then((comment) => {
+    return comment[1].rows[0];
+  });
+};
+
 exports.updateReview = (review_id, inc_votes) => {
   return Promise.all([
     checkExists("reviews", "review_id", review_id),
