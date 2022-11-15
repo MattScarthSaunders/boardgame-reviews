@@ -110,47 +110,46 @@ describe("GET", () => {
         });
     });
   });
-});
-
-describe("Errors", () => {
-  test("GET 404 - route that does not exist", () => {
-    return request(app)
-      .get("/api/dinosa3ur2s")
-      .expect(404)
-      .then((res) => {
-        expect(res.body.msg).toBe("Invalid URL");
-      });
-  });
-  test("GET 400 - invalid review id", () => {
-    return request(app)
-      .get("/api/reviews/slippers")
-      .expect(400)
-      .then((res) => {
-        expect(res.body.msg).toBe("Invalid Id");
-      });
-  });
-  test("GET 404 - valid but out of bounds review id", () => {
-    return request(app)
-      .get("/api/reviews/9001")
-      .expect(404)
-      .then((res) => {
-        expect(res.body.msg).toBe("ID not found");
-      });
-  });
-  test("GET 400 - invalid id for comment query", () => {
-    return request(app)
-      .get("/api/reviews/slippers/comments")
-      .expect(400)
-      .then((res) => {
-        expect(res.body.msg).toBe("Invalid Id");
-      });
-  });
-  test("GET 404 - returns no comment array and correct error message if id valid but out of bounds", () => {
-    return request(app)
-      .get("/api/reviews/9001/comments")
-      .expect(404)
-      .then((res) => {
-        expect(res.body.msg).toBe("Review not found");
-      });
+  describe("Errors", () => {
+    test("GET 404 - route that does not exist", () => {
+      return request(app)
+        .get("/api/dinosa3ur2s")
+        .expect(404)
+        .then((res) => {
+          expect(res.body.msg).toBe("Invalid URL");
+        });
+    });
+    test("GET 400 - invalid review id", () => {
+      return request(app)
+        .get("/api/reviews/slippers")
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Invalid Id");
+        });
+    });
+    test("GET 404 - valid but out of bounds review id", () => {
+      return request(app)
+        .get("/api/reviews/9001")
+        .expect(404)
+        .then((res) => {
+          expect(res.body.msg).toBe("ID not found");
+        });
+    });
+    test("GET 400 - invalid id for comment query", () => {
+      return request(app)
+        .get("/api/reviews/slippers/comments")
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Invalid Id");
+        });
+    });
+    test("GET 404 - returns no comment array and correct error message if id valid but out of bounds", () => {
+      return request(app)
+        .get("/api/reviews/9001/comments")
+        .expect(404)
+        .then((res) => {
+          expect(res.body.msg).toBe("Content not found");
+        });
+    });
   });
 });

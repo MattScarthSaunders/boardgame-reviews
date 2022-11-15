@@ -16,7 +16,7 @@ exports.invalidId = (err, req, res, next) => {
 };
 
 exports.customErrors = (err, req, res, next) => {
-  if (err.status) {
+  if (err.status && err.msg) {
     res.status(err.status).send({ msg: err.msg });
   } else {
     next(err);

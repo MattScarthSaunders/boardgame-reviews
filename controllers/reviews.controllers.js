@@ -22,10 +22,8 @@ exports.getReviewById = (req, res, next) => {
 
 exports.getCommentsByReview = (req, res, next) => {
   const { review_id } = req.params;
-  checkExists("reviews", "review_id", review_id)
-    .then(() => {
-      return selectCommentsByReview(review_id);
-    })
+
+  selectCommentsByReview(review_id)
     .then((comments) => {
       res.status(200).send({ comments });
     })
