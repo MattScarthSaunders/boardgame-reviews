@@ -199,7 +199,7 @@ describe("PATCH", () => {
         .send({})
         .expect(400)
         .then((res) => {
-          expect(res.body.msg).toBe("Bad patch body");
+          expect(res.body.msg).toBe("Received invalid content");
         });
     });
   });

@@ -4,6 +4,7 @@ const {
   invalidURL,
   invalidId,
   customErrors,
+  invalidContent,
 } = require("./controllers/errors.controllers.js");
 const { getCategories } = require("./controllers/categories.controllers.js");
 const {
@@ -25,6 +26,7 @@ app.patch("/api/reviews/:review_id", patchReview);
 //Errors
 
 app.use(invalidId);
+app.use(invalidContent);
 app.use(customErrors);
 
 app.all("/*", invalidURL);
