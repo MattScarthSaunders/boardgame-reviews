@@ -265,6 +265,15 @@ describe("PATCH", () => {
           expect(res.body.review.votes).toBe(2);
         });
     });
+    test("PATCH 200 - should handle negative values", () => {
+      return request(app)
+        .patch("/api/reviews/1")
+        .send({ inc_votes: -100 })
+        .expect(200)
+        .then((res) => {
+          expect(res.body.review.votes).toBe(-99);
+        });
+    });
   });
   describe("Errors", () => {
     test("PATCH 400 - invalid review id", () => {
@@ -298,6 +307,15 @@ describe("PATCH", () => {
       return request(app)
         .patch("/api/reviews/1")
         .send({ inc_vetes: 1 })
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Received invalid content");
+        });
+    });
+    test("PATCH 400 - bad body prop value", () => {
+      return request(app)
+        .patch("/api/reviews/1")
+        .send({ inc_vetes: "slime" })
         .expect(400)
         .then((res) => {
           expect(res.body.msg).toBe("Received invalid content");
