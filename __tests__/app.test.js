@@ -65,19 +65,59 @@ describe("GET", () => {
         .then((res) => {
           expect(res.body.review).toEqual({
             review_id: 1,
-            title: expect.any(String),
+            title: "Agricola",
+            designer: "Uwe Rosenberg",
             review_body: expect.any(String),
-            designer: expect.any(String),
             review_img_url: expect.any(String),
             votes: expect.any(Number),
-            category: expect.any(String),
+            category: "euro game",
             owner: expect.any(String),
             created_at: expect.any(String),
           });
         });
     });
+    test("GET 200 /api/reviews/:review_id/comments - should respond with array of comments for given review, sorted by date", () => {
+      return request(app)
+        .get("/api/reviews/3/comments")
+        .expect(200)
+        .then((res) => {
+          expect(res.body.comments).toBeInstanceOf(Array);
+          expect(res.body.comments).toHaveLength(3);
+          expect(res.body.comments).toBeSortedBy("created_at", {
+            descending: true,
+          });
+          res.body.comments.forEach((comment) => {
+            expect(comment).toEqual(
+              expect.objectContaining({
+                comment_id: expect.any(Number),
+                votes: expect.any(Number),
+                created_at: expect.any(String),
+                author: expect.any(String),
+                body: expect.any(String),
+                review_id: expect.any(Number),
+              })
+            );
+          });
+          expect(res.body.comments[0]).toEqual({
+            comment_id: 6,
+            body: "Not sure about dogs, but my cat likes to get involved with board games, the boxes are their particular favourite",
+            votes: 10,
+            author: "philippaclaire9",
+            review_id: 3,
+            created_at: "2021-03-27T19:49:48.110Z",
+          });
+        });
+    });
+    test("GET 200 - returns an empty array if no matches", () => {
+      return request(app)
+        .get("/api/reviews/7/comments")
+        .expect(200)
+        .then((res) => {
+          expect(res.body.comments).toBeInstanceOf(Array);
+          expect(res.body.comments).toHaveLength(0);
+        });
+    });
   });
-
   describe("Errors", () => {
     test("GET 404 - route that does not exist", () => {
       return request(app)
@@ -101,6 +141,22 @@ describe("GET", () => {
         .expect(404)
         .then((res) => {
           expect(res.body.msg).toBe("ID not found");
+        });
+    });
+    test("GET 400 - invalid id for comment query", () => {
+      return request(app)
+        .get("/api/reviews/slippers/comments")
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Invalid Id");
+        });
+    });
+    test("GET 404 - returns no comment array and correct error message if id valid but out of bounds", () => {
+      return request(app)
+        .get("/api/reviews/9001/comments")
+        .expect(404)
+        .then((res) => {
+          expect(res.body.msg).toBe("Content not found");
         });
     });
   });
