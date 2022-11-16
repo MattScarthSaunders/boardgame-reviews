@@ -4,7 +4,7 @@ const { checkExists } = require("../utils/utils.js");
 exports.selectReviews = (sortTerm = "created_at", order = "desc", category) => {
   let values = [];
 
-  const validTerms = [
+  const validSorts = [
     "review_id",
     "title",
     "designer",
@@ -17,12 +17,12 @@ exports.selectReviews = (sortTerm = "created_at", order = "desc", category) => {
     "comment_count",
   ];
 
-  if (!validTerms.includes(sortTerm)) {
+  if (!validSorts.includes(sortTerm)) {
     return Promise.reject({ status: 400, msg: "Bad query" });
   }
 
   if (order !== "desc" && order !== "asc") {
-    return Promise.reject({ sttatus: 400, msg: "Bad query" });
+    return Promise.reject({ status: 400, msg: "Bad query" });
   }
 
   let queryString = `
@@ -34,7 +34,6 @@ exports.selectReviews = (sortTerm = "created_at", order = "desc", category) => {
     queryString += ` WHERE category = $1`;
     values.push(category);
   }
-
   queryString += `GROUP BY reviews.review_id ORDER BY ${sortTerm} ${order}`;
 
   return db.query(queryString, values).then((reviews) => {

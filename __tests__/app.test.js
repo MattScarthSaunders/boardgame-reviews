@@ -117,7 +117,6 @@ describe("GET", () => {
           expect(res.body.reviews).toBeSortedBy("created_at", {
             ascending: true,
           });
-          console.log(res.body.reviews[0]);
           expect(res.body.reviews[0]).toEqual({
             review_id: 13,
             title: "Settlers of Catan: Don't Settle For Less",
@@ -257,6 +256,30 @@ describe("GET", () => {
         .expect(404)
         .then((res) => {
           expect(res.body.msg).toBe("Content not found");
+        });
+    });
+    test("GET 400 - invalid sort query", () => {
+      return request(app)
+        .get("/api/reviews?sort_by=diplodocus")
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Bad query");
+        });
+    });
+    test("GET 400 - invalid order", () => {
+      return request(app)
+        .get("/api/reviews?order=sideways")
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Bad query");
+        });
+    });
+    test("GET 400 - query typo", () => {
+      return request(app)
+        .get("/api/reviews?older=desc")
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Bad query");
         });
     });
   });

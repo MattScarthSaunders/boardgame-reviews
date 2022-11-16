@@ -6,11 +6,20 @@ const {
   insertComment,
 } = require("../models/reviews.models.js");
 
-exports.getReviews = (req, res) => {
+exports.getReviews = (req, res, next) => {
   const { sort_by, order, category } = req.query;
-  selectReviews(sort_by, order, category).then((reviews) => {
-    res.status(200).send({ reviews });
-  });
+  const queryKeys = Object.keys(req.query);
+  const validQueries = ["sort_by", "order", "category"];
+
+  if (!queryKeys.every((key) => validQueries.includes(key))) {
+    next("Bad query");
+  } else {
+    selectReviews(sort_by, order, category)
+      .then((reviews) => {
+        res.status(200).send({ reviews });
+      })
+      .catch(next);
+  }
 };
 
 exports.getReviewById = (req, res, next) => {
