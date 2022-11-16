@@ -342,3 +342,29 @@ describe("PATCH", () => {
     });
   });
 });
+
+describe("DELETE", () => {
+  describe("functionality", () => {
+    test("DELETE 204 - should delete given comment", () => {
+      return request(app).delete("/api/comments/1").expect(204);
+    });
+  });
+  describe("errors", () => {
+    test("DELETE 400 - invalid id", () => {
+      return request(app)
+        .delete("/api/comments/samwise")
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Invalid Id");
+        });
+    });
+    test("DELETE 404 - valid id but out of bounds", () => {
+      return request(app)
+        .delete("/api/comments/9001")
+        .expect(404)
+        .then((res) => {
+          expect(res.body.msg).toBe("ID not found");
+        });
+    });
+  });
+});
