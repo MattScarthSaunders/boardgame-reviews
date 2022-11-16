@@ -83,31 +83,81 @@ describe("GET", () => {
           });
         });
     });
-    // test("GET 200: should respond correctly with sort_by query", () => {
-    //   return request(app)
-    //     .get("/api/reviews?category=dexterity")
-    //     .expect(200)
-    //     .then((res) => {
-    //       expect(res.body.reviews).toBeInstanceOf(Array);
-    //       expect(res.body.reviews).toHaveLength(1);
-    //       expect(res.body.reviews).toBeSortedBy("created_at", {
-    //         descending: true,
-    //       });
-    //       expect(res.body.reviews[0]).toEqual({
-    //         review_id: 2,
-    //         title: "Jenga",
-    //         designer: "Leslie Scott",
-    //         owner: "philippaclaire9",
-    //         review_img_url:
-    //           "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
-    //         review_body: "Fiddly fun for all the family",
-    //         category: "dexterity",
-    //         created_at: expect.any(String),
-    //         votes: 5,
-    //         comment_count: 3,
-    //       });
-    //     });
-    // });
+    test("GET 200: should respond correctly with sort_by query", () => {
+      return request(app)
+        .get("/api/reviews?sort_by=review_id")
+        .expect(200)
+        .then((res) => {
+          expect(res.body.reviews).toBeInstanceOf(Array);
+          expect(res.body.reviews).toHaveLength(13);
+          expect(res.body.reviews).toBeSortedBy("review_id", {
+            descending: true,
+          });
+          expect(res.body.reviews[0]).toEqual({
+            review_id: 13,
+            title: "Settlers of Catan: Don't Settle For Less",
+            category: "social deduction",
+            designer: "Klaus Teuber",
+            owner: "mallionaire",
+            review_body: expect.any(String),
+            review_img_url: expect.any(String),
+            created_at: "1970-01-10T02:08:38.400Z",
+            votes: 16,
+            comment_count: 0,
+          });
+        });
+    });
+    test("GET 200: should respond correctly with order query", () => {
+      return request(app)
+        .get("/api/reviews?order=asc")
+        .expect(200)
+        .then((res) => {
+          expect(res.body.reviews).toBeInstanceOf(Array);
+          expect(res.body.reviews).toHaveLength(13);
+          expect(res.body.reviews).toBeSortedBy("created_at", {
+            ascending: true,
+          });
+          console.log(res.body.reviews[0]);
+          expect(res.body.reviews[0]).toEqual({
+            review_id: 13,
+            title: "Settlers of Catan: Don't Settle For Less",
+            category: "social deduction",
+            designer: "Klaus Teuber",
+            owner: "mallionaire",
+            review_body: expect.any(String),
+            review_img_url: expect.any(String),
+            created_at: "1970-01-10T02:08:38.400Z",
+            votes: 16,
+            comment_count: 0,
+          });
+        });
+    });
+    test("GET 200: should respond correctly with all queries", () => {
+      return request(app)
+        .get(
+          "/api/reviews?category=social%20deduction&sort_by=review_id&order=asc"
+        )
+        .expect(200)
+        .then((res) => {
+          expect(res.body.reviews).toBeInstanceOf(Array);
+          expect(res.body.reviews).toHaveLength(11);
+          expect(res.body.reviews).toBeSortedBy("review_id", {
+            ascending: true,
+          });
+          expect(res.body.reviews[0]).toEqual({
+            review_id: 3,
+            title: "Ultimate Werewolf",
+            category: "social deduction",
+            designer: "Akihisa Okui",
+            owner: "bainesface",
+            review_body: "We couldn't find the werewolf!",
+            review_img_url: expect.any(String),
+            created_at: "2021-01-18T10:01:41.251Z",
+            votes: 5,
+            comment_count: 3,
+          });
+        });
+    });
     test("GET 200 /api/reviews/:review_id: should respond with a single review object of correct ID", () => {
       return request(app)
         .get("/api/reviews/1")
