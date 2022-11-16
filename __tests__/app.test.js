@@ -83,6 +83,15 @@ describe("GET", () => {
           });
         });
     });
+    test("GET 200: should respond with empty array if category exists but no reviews", () => {
+      return request(app)
+        .get("/api/reviews?category=children's%20games")
+        .expect(200)
+        .then((res) => {
+          expect(res.body.reviews).toBeInstanceOf(Array);
+          expect(res.body.reviews).toHaveLength(0);
+        });
+    });
     test("GET 200: should respond correctly with sort_by query", () => {
       return request(app)
         .get("/api/reviews?sort_by=review_id")
@@ -272,6 +281,14 @@ describe("GET", () => {
     test("GET 404 - returns no comment array and correct error message if id valid but out of bounds", () => {
       return request(app)
         .get("/api/reviews/9001/comments")
+        .expect(404)
+        .then((res) => {
+          expect(res.body.msg).toBe("Content not found");
+        });
+    });
+    test("GET 404 - non existent category query", () => {
+      return request(app)
+        .get("/api/reviews?category=1")
         .expect(404)
         .then((res) => {
           expect(res.body.msg).toBe("Content not found");

@@ -1,5 +1,5 @@
 const db = require("../db/connection.js");
-const { checkExists } = require("../utils/utils.js");
+const { checkExists, checkCategory } = require("../utils/utils.js");
 
 exports.selectReviews = (sortTerm = "created_at", order = "desc", category) => {
   let values = [];
@@ -33,7 +33,16 @@ exports.selectReviews = (sortTerm = "created_at", order = "desc", category) => {
   if (category) {
     queryString += ` WHERE category = $1`;
     values.push(category);
+    queryString += `GROUP BY reviews.review_id ORDER BY ${sortTerm} ${order}`;
+
+    return Promise.all([
+      checkExists("categories", "slug", category),
+      db.query(queryString, values),
+    ]).then((checkedReviews) => {
+      return checkedReviews[1].rows;
+    });
   }
+
   queryString += `GROUP BY reviews.review_id ORDER BY ${sortTerm} ${order}`;
 
   return db.query(queryString, values).then((reviews) => {
