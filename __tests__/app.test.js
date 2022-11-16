@@ -136,6 +136,12 @@ describe("GET", () => {
           });
         });
     });
+    // test("GET 200: /api should respond with a JSON describing all endpoints", () => {
+    //   return request(app)
+    //     .get("/api")
+    //     .expect(200)
+    //     .then((res) => {});
+    // });
   });
   describe("Errors", () => {
     test("GET 404 - route that does not exist", () => {
