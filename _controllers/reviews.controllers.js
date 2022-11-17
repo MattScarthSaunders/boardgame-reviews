@@ -4,7 +4,7 @@ const {
   selectCommentsByReview,
   updateReview,
   insertComment,
-} = require("../models/reviews.models.js");
+} = require("../_models/reviews.models.js");
 
 exports.getReviews = (req, res, next) => {
   const { sort_by, order, category } = req.query;

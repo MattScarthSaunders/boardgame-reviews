@@ -6,8 +6,8 @@ const {
   customErrors,
   invalidContent,
   invalidQuery,
-} = require("./controllers/errors.controllers.js");
-const apiRouter = require("./routes/api.routers.js");
+} = require("./_controllers/errors.controllers.js");
+const apiRouter = require("./_routes/api.routers.js");
 
 const app = express();
 app.use(express.json());
