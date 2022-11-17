@@ -15,7 +15,15 @@ afterAll(() => {
 
 describe("GET", () => {
   describe("functionality", () => {
-    test("GET 200: should respond with an array of category objects, with slug and description properties", () => {
+    test("GET 200: /api | should respond with a JSON file describing all endpoints", () => {
+      return request(app)
+        .get("/api")
+        .expect(200)
+        .then((res) => {
+          expect(res.body).toEqual(endPointJsonData);
+        });
+    });
+    test("GET 200: /api/categories | should respond with an array of category objects, with slug and description properties", () => {
       return request(app)
         .get("/api/categories")
         .expect(200)
@@ -32,7 +40,7 @@ describe("GET", () => {
           });
         });
     });
-    test("GET 200: should respond with an array of review objects with correct props, sorted by date DESC", () => {
+    test("GET 200: /api/reviews | should respond with an array of review objects with correct props, sorted by date DESC", () => {
       return request(app)
         .get("/api/reviews")
         .expect(200)
@@ -59,7 +67,7 @@ describe("GET", () => {
           });
         });
     });
-    test("GET 200: should respond correctly with category query", () => {
+    test("GET 200: /api/reviews?category= | should respond correctly with category query", () => {
       return request(app)
         .get("/api/reviews?category=dexterity")
         .expect(200)
@@ -84,7 +92,7 @@ describe("GET", () => {
           });
         });
     });
-    test("GET 200: should respond with empty array if category exists but no reviews", () => {
+    test("GET 200: /api/reviews?category= | should respond with empty array if category exists but no reviews", () => {
       return request(app)
         .get("/api/reviews?category=children's%20games")
         .expect(200)
@@ -93,7 +101,7 @@ describe("GET", () => {
           expect(res.body.reviews).toHaveLength(0);
         });
     });
-    test("GET 200: should respond correctly with sort_by query", () => {
+    test("GET 200: /api/reviews?sort_by= | should respond correctly with sort_by query", () => {
       return request(app)
         .get("/api/reviews?sort_by=review_id")
         .expect(200)
@@ -117,7 +125,7 @@ describe("GET", () => {
           });
         });
     });
-    test("GET 200: should respond correctly with order query", () => {
+    test("GET 200: /api/reviews?order= | should respond correctly with order query", () => {
       return request(app)
         .get("/api/reviews?order=asc")
         .expect(200)
@@ -141,7 +149,7 @@ describe("GET", () => {
           });
         });
     });
-    test("GET 200: should respond correctly with all queries", () => {
+    test("GET 200: /api/reviews?category=&sort_by=&order= | should respond correctly with all queries", () => {
       return request(app)
         .get(
           "/api/reviews?category=social%20deduction&sort_by=review_id&order=asc"
@@ -167,7 +175,7 @@ describe("GET", () => {
           });
         });
     });
-    test("GET 200 /api/reviews/:review_id: should respond with a single review object of correct ID", () => {
+    test("GET 200 /api/reviews/:review_id: | should respond with a single review object of correct ID", () => {
       return request(app)
         .get("/api/reviews/3")
         .expect(200)
@@ -186,7 +194,7 @@ describe("GET", () => {
           });
         });
     });
-    test("GET 200 /api/reviews/:review_id/comments - should respond with array of comments for given review, sorted by date", () => {
+    test("GET 200 /api/reviews/:review_id/comments | should respond with array of comments for given review, sorted by date", () => {
       return request(app)
         .get("/api/reviews/3/comments")
         .expect(200)
@@ -218,7 +226,7 @@ describe("GET", () => {
           });
         });
     });
-    test("GET 200 - returns an empty array if no matches", () => {
+    test("GET 200 - /api/reviews/:review_id/comments | returns an empty array if no matches", () => {
       return request(app)
         .get("/api/reviews/7/comments")
         .expect(200)
@@ -227,7 +235,7 @@ describe("GET", () => {
           expect(res.body.comments).toHaveLength(0);
         });
     });
-    test("GET 200 - /api/users returns an array of user objects", () => {
+    test("GET 200 - /api/users | returns an array of user objects", () => {
       return request(app)
         .get("/api/users")
         .expect(200)
@@ -245,25 +253,21 @@ describe("GET", () => {
           });
         });
     });
-    test("GET 200: /api should respond with a JSON file describing all endpoints", () => {
-      return request(app)
-        .get("/api")
-        .expect(200)
-        .then((res) => {
-          expect(res.body).toEqual(endPointJsonData);
-        });
-    });
+    // test("GET 200: /api/users/:username | should respond with a user object", () => {
+    //   return request(app)
+    //     .get("/api/users/mallionaire")
+    //     .expect(200)
+    //     .then((res) => {
+    //       expect(res.body.user).toEqual({
+    //         username: "mallionaire",
+    //         name: "haz",
+    //         avatar_url: expect.any(String),
+    //       });
+    //     });
+    // });
   });
   describe("Errors", () => {
-    test("GET 404 - route that does not exist", () => {
-      return request(app)
-        .get("/api/dinosa3ur2s")
-        .expect(404)
-        .then((res) => {
-          expect(res.body.msg).toBe("Invalid URL");
-        });
-    });
-    test("GET 400 - invalid review id", () => {
+    test("GET 400 - /api/reviews/:review_id | invalid review id", () => {
       return request(app)
         .get("/api/reviews/slippers")
         .expect(400)
@@ -271,7 +275,7 @@ describe("GET", () => {
           expect(res.body.msg).toBe("Invalid Id");
         });
     });
-    test("GET 404 - valid but out of bounds review id", () => {
+    test("GET 404 - /api/reviews/:review_id | valid but out of bounds review id", () => {
       return request(app)
         .get("/api/reviews/9001")
         .expect(404)
@@ -279,7 +283,7 @@ describe("GET", () => {
           expect(res.body.msg).toBe("ID not found");
         });
     });
-    test("GET 400 - invalid id for comment query", () => {
+    test("GET 400 - /api/reviews/:review_id/comments |invalid id for comment query", () => {
       return request(app)
         .get("/api/reviews/slippers/comments")
         .expect(400)
@@ -287,7 +291,7 @@ describe("GET", () => {
           expect(res.body.msg).toBe("Invalid Id");
         });
     });
-    test("GET 404 - returns no comment array and correct error message if id valid but out of bounds", () => {
+    test("GET 404 - /api/reviews/:review_id/comments | returns no comment array and correct error message if id valid but out of bounds", () => {
       return request(app)
         .get("/api/reviews/9001/comments")
         .expect(404)
@@ -295,7 +299,7 @@ describe("GET", () => {
           expect(res.body.msg).toBe("Content not found");
         });
     });
-    test("GET 404 - non existent category query", () => {
+    test("GET 404 - /api/reviews?query | non existent category query", () => {
       return request(app)
         .get("/api/reviews?category=1")
         .expect(404)
@@ -303,7 +307,7 @@ describe("GET", () => {
           expect(res.body.msg).toBe("Content not found");
         });
     });
-    test("GET 400 - invalid sort query", () => {
+    test("GET 400 - /api/reviews?query | invalid sort query", () => {
       return request(app)
         .get("/api/reviews?sort_by=diplodocus")
         .expect(400)
@@ -311,7 +315,7 @@ describe("GET", () => {
           expect(res.body.msg).toBe("Bad query");
         });
     });
-    test("GET 400 - invalid order", () => {
+    test("GET 400 - /api/reviews?query | invalid order", () => {
       return request(app)
         .get("/api/reviews?order=sideways")
         .expect(400)
@@ -319,7 +323,7 @@ describe("GET", () => {
           expect(res.body.msg).toBe("Bad query");
         });
     });
-    test("GET 400 - query typo", () => {
+    test("GET 400 - /api/reviews?query | query typo", () => {
       return request(app)
         .get("/api/reviews?older=desc")
         .expect(400)
@@ -332,7 +336,7 @@ describe("GET", () => {
 
 describe("POST", () => {
   describe("functionality", () => {
-    test("POST 201 - can post a new comment to a review", () => {
+    test("POST 201 - /api/reviews/:review_id/comments | can post a new comment to a review", () => {
       return request(app)
         .post("/api/reviews/1/comments")
         .send({
@@ -349,7 +353,7 @@ describe("POST", () => {
     });
   });
   describe("errors", () => {
-    test("POST 400 - invalid review id", () => {
+    test("POST 400 - /api/reviews/:review_id/comments | invalid review id", () => {
       return request(app)
         .post("/api/reviews/pippin/comments")
         .send({
@@ -361,7 +365,7 @@ describe("POST", () => {
           expect(res.body.msg).toBe("Invalid Id");
         });
     });
-    test("POST 404 - valid id but out of bounds", () => {
+    test("POST 404 - /api/reviews/:review_id/comments | valid id but out of bounds", () => {
       return request(app)
         .post("/api/reviews/9001/comments")
         .send({
@@ -373,7 +377,7 @@ describe("POST", () => {
           expect(res.body.msg).toBe("Content not found");
         });
     });
-    test("POST 400 - missing body", () => {
+    test("POST 400 - /api/reviews/:review_id/comments | missing body", () => {
       return request(app)
         .post("/api/reviews/1/comments")
         .send({
@@ -384,7 +388,7 @@ describe("POST", () => {
           expect(res.body.msg).toBe("Received invalid content");
         });
     });
-    test("POST 400 - missing username", () => {
+    test("POST 400 - /api/reviews/:review_id/comments | missing username", () => {
       return request(app)
         .post("/api/reviews/1/comments")
         .send({
@@ -395,7 +399,7 @@ describe("POST", () => {
           expect(res.body.msg).toBe("Received invalid content");
         });
     });
-    test("POST 400 - bad username", () => {
+    test("POST 400 - /api/reviews/:review_id/comments | bad username", () => {
       return request(app)
         .post("/api/reviews/1/comments")
         .send({
@@ -407,7 +411,7 @@ describe("POST", () => {
           expect(res.body.msg).toBe("Received invalid content");
         });
     });
-    test("POST 400 - bad body", () => {
+    test("POST 400 - /api/reviews/:review_id/comments | bad body", () => {
       return request(app)
         .post("/api/reviews/1/comments")
         .send({
@@ -424,7 +428,7 @@ describe("POST", () => {
 
 describe("PATCH", () => {
   describe("functionality", () => {
-    test("PATCH 200 - should update vote count of given review (positive)", () => {
+    test("PATCH 200 - /api/reviews/:review_id | should update vote count of given review (positive)", () => {
       return request(app)
         .patch("/api/reviews/1")
         .send({ inc_votes: 1 })
@@ -433,7 +437,7 @@ describe("PATCH", () => {
           expect(res.body.review.votes).toBe(2);
         });
     });
-    test("PATCH 200 - should handle negative values", () => {
+    test("PATCH 200 - /api/reviews/:review_id | should handle negative values", () => {
       return request(app)
         .patch("/api/reviews/1")
         .send({ inc_votes: -100 })
@@ -444,7 +448,7 @@ describe("PATCH", () => {
     });
   });
   describe("Errors", () => {
-    test("PATCH 400 - invalid review id", () => {
+    test("PATCH 400 - /api/reviews/:review_id | invalid review id", () => {
       return request(app)
         .patch("/api/reviews/spaniel")
         .send({ inc_votes: 1 })
@@ -453,7 +457,7 @@ describe("PATCH", () => {
           expect(res.body.msg).toBe("Invalid Id");
         });
     });
-    test("PATCH 404 - valid id but out of bounds", () => {
+    test("PATCH 404 - /api/reviews/:review_id | valid id but out of bounds", () => {
       return request(app)
         .patch("/api/reviews/9001")
         .send({ inc_votes: 1 })
@@ -462,7 +466,7 @@ describe("PATCH", () => {
           expect(res.body.msg).toBe("Content not found");
         });
     });
-    test("PATCH 400 - body missing", () => {
+    test("PATCH 400 - /api/reviews/:review_id | body missing", () => {
       return request(app)
         .patch("/api/reviews/1")
         .send({})
@@ -471,7 +475,7 @@ describe("PATCH", () => {
           expect(res.body.msg).toBe("Received invalid content");
         });
     });
-    test("PATCH 400 - body prop typo", () => {
+    test("PATCH 400 - /api/reviews/:review_id | body prop typo", () => {
       return request(app)
         .patch("/api/reviews/1")
         .send({ inc_vetes: 1 })
@@ -480,7 +484,7 @@ describe("PATCH", () => {
           expect(res.body.msg).toBe("Received invalid content");
         });
     });
-    test("PATCH 400 - bad body prop value", () => {
+    test("PATCH 400 - /api/reviews/:review_id | bad body prop value", () => {
       return request(app)
         .patch("/api/reviews/1")
         .send({ inc_vetes: "slime" })
@@ -494,12 +498,12 @@ describe("PATCH", () => {
 
 describe("DELETE", () => {
   describe("functionality", () => {
-    test("DELETE 204 - should delete given comment", () => {
+    test("DELETE 204 - /api/comments/:comment_id | should delete given comment", () => {
       return request(app).delete("/api/comments/1").expect(204);
     });
   });
   describe("errors", () => {
-    test("DELETE 400 - invalid id", () => {
+    test("DELETE 400 - /api/comments/:comment_id | invalid id", () => {
       return request(app)
         .delete("/api/comments/samwise")
         .expect(400)
@@ -507,7 +511,7 @@ describe("DELETE", () => {
           expect(res.body.msg).toBe("Invalid Id");
         });
     });
-    test("DELETE 404 - valid id but out of bounds", () => {
+    test("DELETE 404 - /api/comments/:comment_id | valid id but out of bounds", () => {
       return request(app)
         .delete("/api/comments/9001")
         .expect(404)
@@ -515,5 +519,16 @@ describe("DELETE", () => {
           expect(res.body.msg).toBe("ID not found");
         });
     });
+  });
+});
+
+describe("Generic Errors", () => {
+  test("route that does not exist", () => {
+    return request(app)
+      .get("/api/dinosa3ur2s")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("Invalid URL");
+      });
   });
 });

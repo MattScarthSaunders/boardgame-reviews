@@ -1,5 +1,5 @@
 const apiRouter = require("express").Router();
-const { getAPI } = require("../controllers/api.controllers");
+const { getAPI } = require("../_controllers/api.controllers");
 const {
   categoryRouter,
   commentRouter,

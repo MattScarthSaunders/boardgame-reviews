@@ -4,7 +4,7 @@ const {
   getCommentsByReview,
   patchReview,
   postCommentToReview,
-} = require("../controllers/reviews.controllers");
+} = require("../_controllers/reviews.controllers");
 const reviewRouter = require("express").Router();
 
 reviewRouter.get("/", getReviews);

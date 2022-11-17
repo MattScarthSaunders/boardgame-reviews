@@ -1,4 +1,4 @@
-const { readEndpoints } = require("../models/api.models");
+const { readEndpoints } = require("../_models/api.models");
 
 exports.getAPI = (req, res) => {
   readEndpoints().then((endpoints) => {
