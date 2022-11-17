@@ -253,18 +253,18 @@ describe("GET", () => {
           });
         });
     });
-    // test("GET 200: /api/users/:username | should respond with a user object", () => {
-    //   return request(app)
-    //     .get("/api/users/mallionaire")
-    //     .expect(200)
-    //     .then((res) => {
-    //       expect(res.body.user).toEqual({
-    //         username: "mallionaire",
-    //         name: "haz",
-    //         avatar_url: expect.any(String),
-    //       });
-    //     });
-    // });
+    test("GET 200: /api/users/:username | should respond with a user object", () => {
+      return request(app)
+        .get("/api/users/mallionaire")
+        .expect(200)
+        .then((res) => {
+          expect(res.body.user).toEqual({
+            username: "mallionaire",
+            name: "haz",
+            avatar_url: expect.any(String),
+          });
+        });
+    });
   });
   describe("Errors", () => {
     test("GET 400 - /api/reviews/:review_id | invalid review id", () => {
