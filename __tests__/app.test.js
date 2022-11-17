@@ -359,6 +359,31 @@ describe("POST", () => {
           });
         });
     });
+    test("POST 201 - /api/reviews | can post a new review", () => {
+      return request(app)
+        .post("/api/reviews")
+        .send({
+          owner: "mallionaire",
+          title: "Risk",
+          review_body: "Colonial era military strategy on the tabletop!",
+          designer: "Albert Lamorisse",
+          category: "euro game",
+        })
+        .expect(201)
+        .then((res) => {
+          expect(res.body.review).toEqual({
+            review_id: 14,
+            owner: "mallionaire",
+            title: "Risk",
+            review_body: "Colonial era military strategy on the tabletop!",
+            designer: "Albert Lamorisse",
+            category: "euro game",
+            votes: 0,
+            created_at: expect.any(String),
+            comment_count: 0,
+          });
+        });
+    });
   });
   describe("errors", () => {
     test("POST 400 - /api/reviews/:review_id/comments | invalid review id", () => {

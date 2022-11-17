@@ -50,14 +50,14 @@ exports.selectReviews = (sortTerm = "created_at", order = "desc", category) => {
   }
 };
 
-exports.selectReviewById = (review_id) => {
+exports.selectReviewById = (reviewId) => {
   return db
     .query(
       `SELECT reviews.*, COUNT(comments)::int as comment_count FROM reviews
        LEFT JOIN comments ON reviews.review_id = comments.review_id
        WHERE reviews.review_id = $1
        GROUP BY reviews.review_id;`,
-      [review_id]
+      [reviewId]
     )
     .then((review) => {
       if (!review.rows.length) {
@@ -68,21 +68,21 @@ exports.selectReviewById = (review_id) => {
     });
 };
 
-exports.selectCommentsByReview = (review_id) => {
+exports.selectCommentsByReview = (reviewId) => {
   return Promise.all([
-    checkExists("reviews", "review_id", review_id),
+    checkExists("reviews", "review_id", reviewId),
     db.query(
       `SELECT * FROM comments
        WHERE review_id = $1
        ORDER BY created_at DESC;`,
-      [review_id]
+      [reviewId]
     ),
   ]).then((checkedComments) => {
     return checkedComments[1].rows;
   });
 };
 
-exports.insertComment = (review_id, body, username) => {
+exports.insertComment = (reviewId, body, username) => {
   const dateNow = new Date(new Date());
   const queryString = `
   INSERT INTO comments
@@ -92,16 +92,16 @@ exports.insertComment = (review_id, body, username) => {
   RETURNING author AS username, body;`;
 
   return Promise.all([
-    checkExists("reviews", "review_id", review_id),
-    db.query(queryString, [body, username, review_id, dateNow]),
+    checkExists("reviews", "review_id", reviewId),
+    db.query(queryString, [body, username, reviewId, dateNow]),
   ]).then((comment) => {
     return comment[1].rows[0];
   });
 };
 
-exports.updateReviewVote = (review_id, inc_votes) => {
+exports.updateReviewVote = (reviewId, voteIncrement) => {
   return Promise.all([
-    checkExists("reviews", "review_id", review_id),
+    checkExists("reviews", "review_id", reviewId),
     db.query(
       `
         UPDATE reviews
@@ -109,9 +109,36 @@ exports.updateReviewVote = (review_id, inc_votes) => {
         WHERE review_id = $2
         RETURNING *;
         `,
-      [inc_votes, review_id]
+      [voteIncrement, reviewId]
     ),
   ]).then((checkedReview) => {
     return checkedReview[1].rows[0];
   });
+};
+
+exports.insertReview = (reviewBody) => {
+  const values = [];
+  for (let p in reviewBody) {
+    values.push(reviewBody[p]);
+  }
+  values.push(new Date(new Date()));
+
+  return db
+    .query(
+      `
+      INSERT INTO reviews
+        (owner, title, review_body, designer, category, votes, created_at)
+      VALUES
+        ($1,$2,$3,$4,$5,0,$6)
+      RETURNING *;`,
+      values
+    )
+    .then((insertedReview) => {
+      return this.selectReviewById(insertedReview.rows[0].review_id);
+    })
+    .then((selectedReview) => {
+      let returnedReview = { ...selectedReview };
+      delete returnedReview.review_img_url;
+      return returnedReview;
+    });
 };
