@@ -1,4 +1,5 @@
 const db = require("../db/connection.js");
+const { checkExists } = require("../utils/utils.js");
 
 exports.removeCommentById = (commentId) => {
   return db
@@ -17,16 +18,17 @@ exports.removeCommentById = (commentId) => {
 };
 
 exports.updateCommentVote = (commentId, voteIncrement) => {
-  return db
-    .query(
+  return Promise.all([
+    checkExists("comments", "comment_id", commentId),
+    db.query(
       `
     UPDATE comments
     SET votes = votes + $1
     WHERE comment_id = $2
     RETURNING *;`,
       [voteIncrement, commentId]
-    )
-    .then((comment) => {
-      return comment.rows[0];
-    });
+    ),
+  ]).then((checkedComment) => {
+    return checkedComment[1].rows[0];
+  });
 };

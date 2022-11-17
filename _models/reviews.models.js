@@ -111,7 +111,7 @@ exports.updateReviewVote = (review_id, inc_votes) => {
         `,
       [inc_votes, review_id]
     ),
-  ]).then((review) => {
-    return review[1].rows[0];
+  ]).then((checkedReview) => {
+    return checkedReview[1].rows[0];
   });
 };
