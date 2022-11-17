@@ -296,7 +296,7 @@ describe("GET", () => {
         .get("/api/reviews/9001/comments")
         .expect(404)
         .then((res) => {
-          expect(res.body.msg).toBe("Content not found");
+          expect(res.body.msg).toBe("reviews not found");
         });
     });
     test("GET 404 - /api/reviews?query | non existent category query", () => {
@@ -304,7 +304,7 @@ describe("GET", () => {
         .get("/api/reviews?category=1")
         .expect(404)
         .then((res) => {
-          expect(res.body.msg).toBe("Content not found");
+          expect(res.body.msg).toBe("categories not found");
         });
     });
     test("GET 400 - /api/reviews?query | invalid sort query", () => {
@@ -407,7 +407,7 @@ describe("POST", () => {
         })
         .expect(404)
         .then((res) => {
-          expect(res.body.msg).toBe("Content not found");
+          expect(res.body.msg).toBe("reviews not found");
         });
     });
     test("POST 400 - /api/reviews/:review_id/comments | missing body", () => {
@@ -450,6 +450,89 @@ describe("POST", () => {
         .send({
           username: "mallionaire",
           cbody: "very insightful comment",
+        })
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Received invalid content");
+        });
+    });
+    test("POST 400 - /api/reviews | invalid body", () => {
+      return request(app)
+        .post("/api/reviews")
+        .send({})
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Received invalid content");
+        });
+    });
+    test("POST 400 - /api/reviews | missing body props", () => {
+      return request(app)
+        .post("/api/reviews")
+        .send({
+          owner: "mallionaire",
+          title: "Risk",
+          designer: "Albert Lamorisse",
+          category: "euro game",
+        })
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Received invalid content");
+        });
+    });
+    test("POST 400 - /api/reviews | body prop typos", () => {
+      return request(app)
+        .post("/api/reviews")
+        .send({
+          owner: "mallionaire",
+          title: "Risk",
+          reiew_ody: "military strategy game",
+          designer: "Albert Lamorisse",
+          category: "euro game",
+        })
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Received invalid content");
+        });
+    });
+    test("POST 404 - /api/reviews | bad category content", () => {
+      return request(app)
+        .post("/api/reviews")
+        .send({
+          owner: "mallionaire",
+          title: "Risk",
+          review_body: "military strategy game",
+          designer: "Albert Lamorisse",
+          category: 123,
+        })
+        .expect(404)
+        .then((res) => {
+          expect(res.body.msg).toBe("categories not found");
+        });
+    });
+    test("POST 404 - /api/reviews | bad owner content", () => {
+      return request(app)
+        .post("/api/reviews")
+        .send({
+          owner: "me",
+          title: "Risk",
+          review_body: "military strategy game",
+          designer: "Albert Lamorisse",
+          category: "dexterity",
+        })
+        .expect(404)
+        .then((res) => {
+          expect(res.body.msg).toBe("users not found");
+        });
+    });
+    test("POST 400 - /api/reviews | no content on non-null prop", () => {
+      return request(app)
+        .post("/api/reviews")
+        .send({
+          owner: "mallionaire",
+          title: null,
+          review_body: "military strategy game",
+          designer: "Albert Lamorisse",
+          category: "dexterity",
         })
         .expect(400)
         .then((res) => {
@@ -514,7 +597,7 @@ describe("PATCH", () => {
         .send({ inc_votes: 1 })
         .expect(404)
         .then((res) => {
-          expect(res.body.msg).toBe("Content not found");
+          expect(res.body.msg).toBe("reviews not found");
         });
     });
     test("PATCH 400 - /api/reviews/:review_id | body missing", () => {
@@ -560,7 +643,7 @@ describe("PATCH", () => {
       .send({ inc_votes: 1 })
       .expect(404)
       .then((res) => {
-        expect(res.body.msg).toBe("Content not found");
+        expect(res.body.msg).toBe("comments not found");
       });
   });
   test("PATCH 400 - /api/comments/:comment_id | body missing", () => {

@@ -60,9 +60,7 @@ exports.patchReviewVote = (req, res, next) => {
     .then((review) => {
       res.status(200).send({ review });
     })
-    .catch((err) => {
-      next(err);
-    });
+    .catch(next);
 };
 
 exports.postReview = (req, res, next) => {

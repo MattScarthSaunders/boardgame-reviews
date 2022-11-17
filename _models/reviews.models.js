@@ -117,14 +117,23 @@ exports.updateReviewVote = (reviewId, voteIncrement) => {
 };
 
 exports.insertReview = (reviewBody) => {
-  const values = [];
-  for (let p in reviewBody) {
-    values.push(reviewBody[p]);
+  const validProps = ["owner", "title", "designer", "category", "review_body"];
+  const bodyValid = Object.keys(reviewBody).every((value) =>
+    validProps.includes(value)
+  );
+
+  const values = Object.values(reviewBody);
+
+  if (!bodyValid || values.length < 5) {
+    return Promise.reject({ status: 400, msg: "Received invalid content" });
   }
+
   values.push(new Date(new Date()));
 
-  return db
-    .query(
+  return Promise.all([
+    checkExists("categories", "slug", reviewBody.category),
+    checkExists("users", "username", reviewBody.owner),
+    db.query(
       `
       INSERT INTO reviews
         (owner, title, review_body, designer, category, votes, created_at)
@@ -132,9 +141,10 @@ exports.insertReview = (reviewBody) => {
         ($1,$2,$3,$4,$5,0,$6)
       RETURNING *;`,
       values
-    )
+    ),
+  ])
     .then((insertedReview) => {
-      return this.selectReviewById(insertedReview.rows[0].review_id);
+      return this.selectReviewById(insertedReview[2].rows[0].review_id);
     })
     .then((selectedReview) => {
       let returnedReview = { ...selectedReview };
