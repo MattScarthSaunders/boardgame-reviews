@@ -55,10 +55,13 @@ exports.selectReviews = (queries) => {
                   ORDER BY ${sort_by} ${order}
                   LIMIT ${limit} OFFSET ${p}`;
 
+  queryArray.push(db.query(`SELECT COUNT(*) AS total_count from reviews`));
   queryArray.push(db.query(queryString, values));
 
   return Promise.all(queryArray).then((checkedQueries) => {
-    return checkedQueries[checkedQueries.length - 1].rows;
+    let lastIndex = checkedQueries.length - 1;
+    let total_count = checkedQueries[lastIndex - 1].rows[0].total_count;
+    return [checkedQueries[lastIndex].rows, Number(total_count)];
   });
 };
 

@@ -17,7 +17,7 @@ exports.getReviews = (req, res, next) => {
   // } else {
   selectReviews(req.query)
     .then((reviews) => {
-      res.status(200).send({ reviews });
+      res.status(200).send({ reviews: reviews[0], total_count: reviews[1] });
     })
     .catch(next);
   // }

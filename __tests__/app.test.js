@@ -194,6 +194,14 @@ describe("GET", () => {
           expect(res.body.reviews[0].review_id).toBe(4);
         });
     });
+    test("GET 200: /apit/reviews | should return a total_count prop regardless of limits", () => {
+      return request(app)
+        .get("/api/reviews?limit=1")
+        .expect(200)
+        .then((res) => {
+          expect(res.body.total_count).toBe(13);
+        });
+    });
     test("GET 200 /api/reviews/:review_id: | should respond with a single review object of correct ID", () => {
       return request(app)
         .get("/api/reviews/3")
