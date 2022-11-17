@@ -41,13 +41,13 @@ exports.selectReviews = (sortTerm = "created_at", order = "desc", category) => {
     ]).then((checkedReviews) => {
       return checkedReviews[1].rows;
     });
+  } else {
+    queryString += `GROUP BY reviews.review_id ORDER BY ${sortTerm} ${order}`;
+
+    return db.query(queryString, values).then((reviews) => {
+      return reviews.rows;
+    });
   }
-
-  queryString += `GROUP BY reviews.review_id ORDER BY ${sortTerm} ${order}`;
-
-  return db.query(queryString, values).then((reviews) => {
-    return reviews.rows;
-  });
 };
 
 exports.selectReviewById = (review_id) => {
