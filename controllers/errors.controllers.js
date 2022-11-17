@@ -32,3 +32,11 @@ exports.customErrors = (err, req, res, next) => {
     next(err);
   }
 };
+
+exports.invalidQuery = (err, req, res, next) => {
+  if (err === "Bad query") {
+    res.status(400).send({ msg: "Bad query" });
+  } else {
+    next(err);
+  }
+};
