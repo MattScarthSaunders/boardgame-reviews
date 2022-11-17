@@ -99,7 +99,7 @@ exports.insertComment = (review_id, body, username) => {
   });
 };
 
-exports.updateReview = (review_id, inc_votes) => {
+exports.updateReviewVote = (review_id, inc_votes) => {
   return Promise.all([
     checkExists("reviews", "review_id", review_id),
     db.query(
