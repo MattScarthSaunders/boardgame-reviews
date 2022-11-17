@@ -19,7 +19,7 @@ Or, you can navigate to that url on github and clone it using one of github's ot
 
 # installing dependencies
 
-To install all the required dependencies, make sure that the package.json file is present, then run:
+To install all the required dependencies, make sure that the package.json file is present and that you're in the correct directory in the terminal, then run:
 
 ```
 npm install
@@ -48,4 +48,10 @@ To run the tests, enter:
 
 ```
 npm test
+```
+
+or, if you just want to run the endpoint tests, enter:
+
+```
+npm t app.test.js
 ```
