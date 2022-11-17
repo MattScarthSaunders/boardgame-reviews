@@ -40,13 +40,13 @@ describe("GET", () => {
           });
         });
     });
-    test("GET 200: /api/reviews | should respond with an array of review objects with correct props, sorted by date DESC", () => {
+    test("GET 200: /api/reviews | should respond with an array of review objects with correct props, sorted by date DESC, limited to 10 by default", () => {
       return request(app)
         .get("/api/reviews")
         .expect(200)
         .then((res) => {
           expect(res.body.reviews).toBeInstanceOf(Array);
-          expect(res.body.reviews).toHaveLength(13);
+          expect(res.body.reviews).toHaveLength(10);
           expect(res.body.reviews).toBeSortedBy("created_at", {
             descending: true,
           });
@@ -107,7 +107,7 @@ describe("GET", () => {
         .expect(200)
         .then((res) => {
           expect(res.body.reviews).toBeInstanceOf(Array);
-          expect(res.body.reviews).toHaveLength(13);
+          expect(res.body.reviews).toHaveLength(10);
           expect(res.body.reviews).toBeSortedBy("review_id", {
             descending: true,
           });
@@ -131,7 +131,7 @@ describe("GET", () => {
         .expect(200)
         .then((res) => {
           expect(res.body.reviews).toBeInstanceOf(Array);
-          expect(res.body.reviews).toHaveLength(13);
+          expect(res.body.reviews).toHaveLength(10);
           expect(res.body.reviews).toBeSortedBy("created_at", {
             ascending: true,
           });
@@ -157,7 +157,7 @@ describe("GET", () => {
         .expect(200)
         .then((res) => {
           expect(res.body.reviews).toBeInstanceOf(Array);
-          expect(res.body.reviews).toHaveLength(11);
+          expect(res.body.reviews).toHaveLength(10);
           expect(res.body.reviews).toBeSortedBy("review_id", {
             ascending: true,
           });
@@ -173,6 +173,25 @@ describe("GET", () => {
             votes: 5,
             comment_count: 3,
           });
+        });
+    });
+    test("GET 200: /api/reviews?limit | should be able to set result limit", () => {
+      return request(app)
+        .get("/api/reviews?limit=12")
+        .expect(200)
+        .then((res) => {
+          expect(res.body.reviews).toBeInstanceOf(Array);
+          expect(res.body.reviews).toHaveLength(12);
+        });
+    });
+    test("GET 200: /api/reviews?p | should be able to set start page", () => {
+      return request(app)
+        .get("/api/reviews?p=3&limit=1&sort_by=review_id&order=asc")
+        .expect(200)
+        .then((res) => {
+          expect(res.body.reviews).toBeInstanceOf(Array);
+          expect(res.body.reviews).toHaveLength(1);
+          expect(res.body.reviews[0].review_id).toBe(4);
         });
     });
     test("GET 200 /api/reviews/:review_id: | should respond with a single review object of correct ID", () => {
@@ -326,6 +345,22 @@ describe("GET", () => {
     test("GET 400 - /api/reviews?query | query typo", () => {
       return request(app)
         .get("/api/reviews?older=desc")
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Bad query");
+        });
+    });
+    test("GET 400 - /api/reviews?query | invalid limit", () => {
+      return request(app)
+        .get("/api/reviews?limit=time")
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Bad query");
+        });
+    });
+    test("GET 400 - /api/reviews?query | invalid p", () => {
+      return request(app)
+        .get("/api/reviews?p=time")
         .expect(400)
         .then((res) => {
           expect(res.body.msg).toBe("Bad query");

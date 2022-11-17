@@ -16,7 +16,7 @@ app.use("/api", apiRouter);
 
 //Errors
 
-app.use(invalidQuery);
+// app.use(invalidQuery);
 app.use(invalidId);
 app.use(invalidContent);
 app.use(customErrors);
