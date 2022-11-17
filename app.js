@@ -5,6 +5,7 @@ const {
   invalidId,
   customErrors,
   invalidContent,
+  invalidQuery,
 } = require("./controllers/errors.controllers.js");
 const { getCategories } = require("./controllers/categories.controllers.js");
 const {
@@ -29,6 +30,7 @@ app.post("/api/reviews/:review_id/comments", postCommentToReview);
 
 //Errors
 
+app.use(invalidQuery);
 app.use(invalidId);
 app.use(invalidContent);
 app.use(customErrors);

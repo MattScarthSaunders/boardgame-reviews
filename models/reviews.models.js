@@ -1,18 +1,53 @@
 const db = require("../db/connection.js");
-const { checkExists } = require("../utils/utils.js");
+const { checkExists, checkCategory } = require("../utils/utils.js");
 
-exports.selectReviews = () => {
-  return db
-    .query(
-      `
-      SELECT reviews.*, COUNT(comments)::int as comment_count FROM reviews 
-      LEFT JOIN comments ON reviews.review_id = comments.review_id
-      GROUP BY reviews.review_id
-      ORDER BY created_at DESC`
-    )
-    .then((reviews) => {
+exports.selectReviews = (sortTerm = "created_at", order = "desc", category) => {
+  let values = [];
+
+  const validSorts = [
+    "review_id",
+    "title",
+    "designer",
+    "owner",
+    "review_img_url",
+    "review_body",
+    "category",
+    "created_at",
+    "votes",
+    "comment_count",
+  ];
+
+  if (!validSorts.includes(sortTerm)) {
+    return Promise.reject({ status: 400, msg: "Bad query" });
+  }
+
+  if (order !== "desc" && order !== "asc") {
+    return Promise.reject({ status: 400, msg: "Bad query" });
+  }
+
+  let queryString = `
+  SELECT reviews.*, COUNT(comments)::int as comment_count FROM reviews 
+  LEFT JOIN comments ON reviews.review_id = comments.review_id
+  `;
+
+  if (category) {
+    queryString += ` WHERE category = $1`;
+    values.push(category);
+    queryString += `GROUP BY reviews.review_id ORDER BY ${sortTerm} ${order}`;
+
+    return Promise.all([
+      checkExists("categories", "slug", category),
+      db.query(queryString, values),
+    ]).then((checkedReviews) => {
+      return checkedReviews[1].rows;
+    });
+  } else {
+    queryString += `GROUP BY reviews.review_id ORDER BY ${sortTerm} ${order}`;
+
+    return db.query(queryString, values).then((reviews) => {
       return reviews.rows;
     });
+  }
 };
 
 exports.selectReviewById = (review_id) => {
