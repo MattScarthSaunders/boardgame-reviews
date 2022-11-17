@@ -3,6 +3,7 @@ const app = require("../app.js");
 const seed = require("../db/seeds/seed.js");
 const data = require("../db/data/test-data");
 const db = require("../db/connection.js");
+const endPointJsonData = require("../endpoints.json");
 
 beforeEach(() => {
   return seed(data);
@@ -242,6 +243,14 @@ describe("GET", () => {
               })
             );
           });
+        });
+    });
+    test("GET 200: /api should respond with a JSON file describing all endpoints", () => {
+      return request(app)
+        .get("/api")
+        .expect(200)
+        .then((res) => {
+          expect(res.body).toEqual(endPointJsonData);
         });
     });
   });
