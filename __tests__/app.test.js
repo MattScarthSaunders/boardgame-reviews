@@ -331,6 +331,14 @@ describe("GET", () => {
           expect(res.body.msg).toBe("Bad query");
         });
     });
+    test('"GET 404: /api/users/:username | username not found', () => {
+      return request(app)
+        .get("/api/users/patchesssss")
+        .expect(404)
+        .then((res) => {
+          expect(res.body.msg).toBe("User not found");
+        });
+    });
   });
 });
 
