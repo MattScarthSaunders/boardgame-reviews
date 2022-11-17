@@ -16,6 +16,7 @@ const {
   postCommentToReview,
 } = require("./controllers/reviews.controllers.js");
 const { getUsers } = require("./controllers/users.controllers.js");
+const { deleteCommentById } = require("./controllers/comments.controllers.js");
 const app = express();
 app.use(express.json());
 
@@ -27,6 +28,8 @@ app.get("/api/users", getUsers);
 
 app.patch("/api/reviews/:review_id", patchReview);
 app.post("/api/reviews/:review_id/comments", postCommentToReview);
+
+app.delete("/api/comments/:comment_id", deleteCommentById);
 
 //Errors
 
