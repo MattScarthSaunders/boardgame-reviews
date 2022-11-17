@@ -12,13 +12,6 @@ exports.selectReviews = (queries) => {
 
   const queryKeys = Object.keys(queries);
   const validQueries = ["sort_by", "order", "category", "limit", "p"];
-
-  if (!queryKeys.every((key) => validQueries.includes(key))) {
-    return Promise.reject({ status: 400, msg: "Bad query" });
-  }
-
-  let values = [];
-  let queryArray = [];
   const validSorts = [
     "review_id",
     "title",
@@ -32,13 +25,20 @@ exports.selectReviews = (queries) => {
     "comment_count",
   ];
 
-  if (!validSorts.includes(sort_by)) {
+  //check if endpoint queries are valid
+  if (
+    !queryKeys.every((key) => validQueries.includes(key)) || //query
+    !validSorts.includes(sort_by) || //sort_by value
+    (order !== "desc" && order !== "asc") || //order value
+    !parseInt(limit) || //limit value
+    !/[0-9]/g.test(p) //page value
+  ) {
     return Promise.reject({ status: 400, msg: "Bad query" });
   }
 
-  if (order !== "desc" && order !== "asc") {
-    return Promise.reject({ status: 400, msg: "Bad query" });
-  }
+  //assemble psql query
+  let values = [];
+  let queryArray = [];
 
   let queryString = `
   SELECT reviews.*, COUNT(comments)::int as comment_count FROM reviews 

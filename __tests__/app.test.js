@@ -350,6 +350,22 @@ describe("GET", () => {
           expect(res.body.msg).toBe("Bad query");
         });
     });
+    test("GET 400 - /api/reviews?query | invalid limit", () => {
+      return request(app)
+        .get("/api/reviews?limit=time")
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Bad query");
+        });
+    });
+    test("GET 400 - /api/reviews?query | invalid p", () => {
+      return request(app)
+        .get("/api/reviews?p=time")
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Bad query");
+        });
+    });
     test('"GET 404: /api/users/:username | username not found', () => {
       return request(app)
         .get("/api/users/patchesssss")
