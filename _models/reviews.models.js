@@ -1,9 +1,24 @@
 const db = require("../db/connection.js");
-const { checkExists, checkCategory } = require("../utils/utils.js");
+const { checkExists } = require("../utils/utils.js");
 
-exports.selectReviews = (sortTerm = "created_at", order = "desc", category) => {
+exports.selectReviews = (queries) => {
+  const {
+    sort_by = "created_at",
+    order = "desc",
+    category,
+    limit = 10,
+    p = 0,
+  } = queries;
+
+  const queryKeys = Object.keys(queries);
+  const validQueries = ["sort_by", "order", "category", "limit", "p"];
+
+  if (!queryKeys.every((key) => validQueries.includes(key))) {
+    return Promise.reject({ status: 400, msg: "Bad query" });
+  }
+
   let values = [];
-
+  let queryArray = [];
   const validSorts = [
     "review_id",
     "title",
@@ -17,7 +32,7 @@ exports.selectReviews = (sortTerm = "created_at", order = "desc", category) => {
     "comment_count",
   ];
 
-  if (!validSorts.includes(sortTerm)) {
+  if (!validSorts.includes(sort_by)) {
     return Promise.reject({ status: 400, msg: "Bad query" });
   }
 
@@ -33,21 +48,18 @@ exports.selectReviews = (sortTerm = "created_at", order = "desc", category) => {
   if (category) {
     queryString += ` WHERE category = $1`;
     values.push(category);
-    queryString += `GROUP BY reviews.review_id ORDER BY ${sortTerm} ${order}`;
-
-    return Promise.all([
-      checkExists("categories", "slug", category),
-      db.query(queryString, values),
-    ]).then((checkedReviews) => {
-      return checkedReviews[1].rows;
-    });
-  } else {
-    queryString += `GROUP BY reviews.review_id ORDER BY ${sortTerm} ${order}`;
-
-    return db.query(queryString, values).then((reviews) => {
-      return reviews.rows;
-    });
+    queryArray.push(checkExists("categories", "slug", category));
   }
+
+  queryString += `GROUP BY reviews.review_id
+                  ORDER BY ${sort_by} ${order}
+                  LIMIT ${limit} OFFSET ${p}`;
+
+  queryArray.push(db.query(queryString, values));
+
+  return Promise.all(queryArray).then((checkedQueries) => {
+    return checkedQueries[checkedQueries.length - 1].rows;
+  });
 };
 
 exports.selectReviewById = (reviewId) => {
