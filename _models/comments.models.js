@@ -15,3 +15,18 @@ exports.removeCommentById = (commentId) => {
       }
     });
 };
+
+exports.updateCommentVote = (commentId, voteIncrement) => {
+  return db
+    .query(
+      `
+    UPDATE comments
+    SET votes = votes + $1
+    WHERE comment_id = $2
+    RETURNING *;`,
+      [voteIncrement, commentId]
+    )
+    .then((comment) => {
+      return comment.rows[0];
+    });
+};

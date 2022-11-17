@@ -454,6 +454,15 @@ describe("PATCH", () => {
           expect(res.body.review.votes).toBe(-99);
         });
     });
+    test("PATCH 200 - /api/comments/:comment_id | should update vote count of given comment", () => {
+      return request(app)
+        .patch("/api/comments/1")
+        .send({ inc_votes: 2 })
+        .expect(200)
+        .then((res) => {
+          expect(res.body.comment.votes).toBe(18);
+        });
+    });
   });
   describe("Errors", () => {
     test("PATCH 400 - /api/reviews/:review_id | invalid review id", () => {
