@@ -464,6 +464,22 @@ describe("POST", () => {
           });
         });
     });
+    test("POST 201 - /api/categories | can post new category", () => {
+      return request(app)
+        .post("/api/categories")
+        .send({
+          slug: "military strategy",
+          description: "players simulate either tactical or strategic warfare",
+        })
+        .expect(201)
+        .then((res) => {
+          expect(res.body.category).toEqual({
+            slug: "military strategy",
+            description:
+              "players simulate either tactical or strategic warfare",
+          });
+        });
+    });
   });
   describe("errors", () => {
     test("POST 400 - /api/reviews/:review_id/comments | invalid review id", () => {
@@ -614,6 +630,42 @@ describe("POST", () => {
           designer: "Albert Lamorisse",
           category: "dexterity",
         })
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Received invalid content");
+        });
+    });
+    test("POST 400 - /api/categories | no body", () => {
+      return request(app)
+        .post("/api/categories")
+        .send({})
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Received invalid content");
+        });
+    });
+    test("POST 400 - /api/categories | partial body", () => {
+      return request(app)
+        .post("/api/categories")
+        .send({ description: "slugs" })
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Received invalid content");
+        });
+    });
+    test("POST 400 - /api/categories | partial body", () => {
+      return request(app)
+        .post("/api/categories")
+        .send({ slug: "slugs" })
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Received invalid content");
+        });
+    });
+    test("POST 400 - /api/categories | prop typo", () => {
+      return request(app)
+        .post("/api/categories")
+        .send({ slag: "unwanted debris", descriion: "rough, dangerous" })
         .expect(400)
         .then((res) => {
           expect(res.body.msg).toBe("Received invalid content");
