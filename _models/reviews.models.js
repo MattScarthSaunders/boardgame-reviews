@@ -183,3 +183,19 @@ exports.insertReview = (reviewBody) => {
       return returnedReview;
     });
 };
+
+exports.removeReview = (reviewId) => {
+  return db
+    .query(
+      `
+    DELETE FROM reviews
+    WHERE review_id = $1
+    RETURNING*`,
+      [reviewId]
+    )
+    .then((review) => {
+      if (!review.rows.length) {
+        return Promise.reject({ status: 404, msg: "ID not found" });
+      }
+    });
+};

@@ -812,6 +812,9 @@ describe("DELETE", () => {
     test("DELETE 204 - /api/comments/:comment_id | should delete given comment", () => {
       return request(app).delete("/api/comments/1").expect(204);
     });
+    test("DELETE 204 - /api/reviews/:review_id | should delete review", () => {
+      return request(app).delete("/api/reviews/1").expect(204);
+    });
   });
   describe("errors", () => {
     test("DELETE 400 - /api/comments/:comment_id | invalid id", () => {
@@ -825,6 +828,22 @@ describe("DELETE", () => {
     test("DELETE 404 - /api/comments/:comment_id | valid id but out of bounds", () => {
       return request(app)
         .delete("/api/comments/9001")
+        .expect(404)
+        .then((res) => {
+          expect(res.body.msg).toBe("ID not found");
+        });
+    });
+    test("DELETE 400 - /api/reviews/:review_id| invalid id", () => {
+      return request(app)
+        .delete("/api/reviews/samwise")
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Invalid Id or Query value");
+        });
+    });
+    test("DELETE 404 - /api/reviews/:review_id| valid id but out of bounds", () => {
+      return request(app)
+        .delete("/api/reviews/9001")
         .expect(404)
         .then((res) => {
           expect(res.body.msg).toBe("ID not found");
