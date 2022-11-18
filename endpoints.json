@@ -16,7 +16,7 @@
   },
   "GET /api/reviews": {
     "description": "serves an array of all reviews",
-    "queries": ["category", "sort_by", "order"],
+    "queries": ["category", "sort_by", "order", "limit", "p"],
     "exampleResponse": {
       "reviews": [
         {
@@ -35,7 +35,7 @@
   },
   "GET /api/reviews/:review_id": {
     "description": "serves a single review",
-    "queries": [],
+    "queries": ["limit", "p"],
     "example response": {
       "review": {
         "review_id": 2,
@@ -79,6 +79,17 @@
       ]
     }
   },
+  "GET /api/users/:username": {
+    "description": "serves a single user",
+    "queries": [],
+    "example response": {
+      "user": {
+        "username": "philippaclaire9",
+        "name": "philippa",
+        "avatar_url": "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4"
+      }
+    }
+  },
   "PATCH /api/reviews/:review_id": {
     "description": "updates a review vote count, serves updated review",
     "queries": [],
@@ -97,12 +108,58 @@
       }
     }
   },
+  "PATCH /api/comments/:comment_id": {
+    "description": "updates a comment vote count, serves updated comment",
+    "queries": [],
+    "example body": { "inc_votes": 999 },
+    "example response": {
+      "comment": {
+        "comment_id": 1,
+        "votes": 6,
+        "created_at": "2021-03-27T19:49:48.110Z",
+        "author": "happyamy2016",
+        "body": "best game ever",
+        "review_id": 2
+      }
+    }
+  },
   "POST /api/reviews/:review_id/comments": {
     "description": "posts a new review comment, serves comment back",
     "queries": [],
     "example body": { "username": "mallionaire", "body": "5/7 perfect game" },
     "example response": {
       "comment": { "username": "mallionaire", "body": "5/7 perfect game" }
+    }
+  },
+  "POST /api/reviews/": {
+    "description": "posts a new review, serves review back",
+    "queries": [],
+    "example body": { "username": "mallionaire", "body": "5/7 perfect game" },
+    "example response": {
+      "review": {
+        "review_id": 2,
+        "title": "One Night Ultimate Werewolf",
+        "designer": "Akihisa Okui",
+        "owner": "happyamy2016",
+        "category": "hidden-roles",
+        "created_at": "2021-03-27T19:49:48.110Z",
+        "votes": 0,
+        "comment_count": 0
+      }
+    }
+  },
+  "POST /api/categories/": {
+    "description": "posts a new category, serves category back",
+    "queries": [],
+    "example body": {
+      "slug": "Military Strategy",
+      "description": "Players engage in simulated tabletop warfare"
+    },
+    "example response": {
+      "category": {
+        "slug": "Military Strategy",
+        "description": "Players engage in simulated tabletop warfare"
+      }
     }
   },
   "DELETE /api/comments/comment_id": {
