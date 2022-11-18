@@ -29,7 +29,7 @@ exports.selectReviews = (queries) => {
   if (
     !queryKeys.every((key) => validQueries.includes(key)) || //query
     !validSorts.includes(sort_by) || //sort_by value
-    (order !== "desc" && order !== "asc") || //order value
+    (order !== "desc" && order !== "asc") || // order value
     !parseInt(limit) || //limit value
     !/[0-9]/g.test(p) //page value
   ) {
@@ -40,20 +40,23 @@ exports.selectReviews = (queries) => {
   let values = [];
   let queryArray = [];
 
+  let offSet = p * limit;
+  values.push(limit, offSet);
+
   let queryString = `
   SELECT reviews.*, COUNT(comments)::int as comment_count FROM reviews 
   LEFT JOIN comments ON reviews.review_id = comments.review_id
   `;
 
   if (category) {
-    queryString += ` WHERE category = $1`;
     values.push(category);
+    queryString += ` WHERE category = $3`;
     queryArray.push(checkExists("categories", "slug", category));
   }
 
   queryString += `GROUP BY reviews.review_id
                   ORDER BY ${sort_by} ${order}
-                  LIMIT ${limit} OFFSET ${p}`;
+                  LIMIT $1 OFFSET $2`;
 
   queryArray.push(db.query(`SELECT COUNT(*) AS total_count from reviews`));
   queryArray.push(db.query(queryString, values));
@@ -83,14 +86,27 @@ exports.selectReviewById = (reviewId) => {
     });
 };
 
-exports.selectCommentsByReview = (reviewId) => {
+exports.selectCommentsByReview = (reviewId, queries) => {
+  const { limit = 10, p = 0 } = queries;
+
+  const queryKeys = Object.keys(queries);
+  const validQueries = ["limit", "p"];
+
+  if (!queryKeys.every((key) => validQueries.includes(key))) {
+    return Promise.reject({ status: 400, msg: "Bad query" });
+  }
+
+  const offSet = p * limit;
+
   return Promise.all([
     checkExists("reviews", "review_id", reviewId),
     db.query(
       `SELECT * FROM comments
        WHERE review_id = $1
-       ORDER BY created_at DESC;`,
-      [reviewId]
+       ORDER BY created_at DESC
+       LIMIT $2
+       OFFSET $3;`,
+      [reviewId, limit, offSet]
     ),
   ]).then((checkedComments) => {
     return checkedComments[1].rows;

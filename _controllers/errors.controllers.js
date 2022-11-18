@@ -7,9 +7,9 @@ exports.invalidURL = (req, res) => {
   res.status(404).send({ msg: "Invalid URL" });
 };
 
-exports.invalidId = (err, req, res, next) => {
+exports.invalidIdOrQuery = (err, req, res, next) => {
   if (err.code === "22P02") {
-    res.status(400).send({ msg: "Invalid Id" });
+    res.status(400).send({ msg: "Invalid Id or Query value" });
   } else {
     next(err);
   }
@@ -30,11 +30,3 @@ exports.customErrors = (err, req, res, next) => {
     next(err);
   }
 };
-
-// exports.invalidQuery = (err, req, res, next) => {
-//   if (err === "Bad query") {
-//     res.status(400).send({ msg: "Bad query" });
-//   } else {
-//     next(err);
-//   }
-// };
