@@ -2,10 +2,9 @@ const express = require("express");
 const {
   catchAll,
   invalidURL,
-  invalidId,
   customErrors,
   invalidContent,
-  invalidQuery,
+  invalidIdOrQuery,
 } = require("./_controllers/errors.controllers.js");
 const apiRouter = require("./_routes/api.routers.js");
 
@@ -17,7 +16,7 @@ app.use("/api", apiRouter);
 //Errors
 
 // app.use(invalidQuery);
-app.use(invalidId);
+app.use(invalidIdOrQuery);
 app.use(invalidContent);
 app.use(customErrors);
 

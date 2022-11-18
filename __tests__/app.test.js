@@ -184,17 +184,17 @@ describe("GET", () => {
           expect(res.body.reviews).toHaveLength(12);
         });
     });
-    test("GET 200: /api/reviews?p | should be able to set start page", () => {
+    test("GET 200: /api/reviews?p | should be able to set start page (each page being the lenth of the limit)", () => {
       return request(app)
-        .get("/api/reviews?p=3&limit=1&sort_by=review_id&order=asc")
+        .get("/api/reviews?p=1&limit=10&sort_by=review_id&order=asc")
         .expect(200)
         .then((res) => {
           expect(res.body.reviews).toBeInstanceOf(Array);
-          expect(res.body.reviews).toHaveLength(1);
-          expect(res.body.reviews[0].review_id).toBe(4);
+          expect(res.body.reviews).toHaveLength(3);
+          expect(res.body.reviews[0].review_id).toBe(11);
         });
     });
-    test("GET 200: /apit/reviews | should return a total_count prop regardless of limits", () => {
+    test("GET 200: /api/reviews | should return a total_count prop regardless of limits", () => {
       return request(app)
         .get("/api/reviews?limit=1")
         .expect(200)
@@ -262,6 +262,27 @@ describe("GET", () => {
           expect(res.body.comments).toHaveLength(0);
         });
     });
+    test("GET 200 - /api/reviews/:review_id/comments?limit | limits displayed comments", () => {
+      return request(app)
+        .get("/api/reviews/2/comments?limit=2")
+        .expect(200)
+        .then((res) => {
+          expect(res.body.comments).toBeInstanceOf(Array);
+          expect(res.body.comments).toHaveLength(2);
+        });
+    });
+    test("GET 200 - /api/reviews/:review_id/comments?p | offsets page of displayed comments", () => {
+      return request(app)
+        .get("/api/reviews/2/comments?p=1&limit=1")
+        .expect(200)
+        .then((res) => {
+          expect(res.body.comments).toBeInstanceOf(Array);
+          expect(res.body.comments).toHaveLength(1);
+          expect(res.body.comments[0].created_at).toBe(
+            "2017-11-22T12:43:33.389Z"
+          );
+        });
+    });
     test("GET 200 - /api/users | returns an array of user objects", () => {
       return request(app)
         .get("/api/users")
@@ -299,7 +320,7 @@ describe("GET", () => {
         .get("/api/reviews/slippers")
         .expect(400)
         .then((res) => {
-          expect(res.body.msg).toBe("Invalid Id");
+          expect(res.body.msg).toBe("Invalid Id or Query value");
         });
     });
     test("GET 404 - /api/reviews/:review_id | valid but out of bounds review id", () => {
@@ -315,7 +336,7 @@ describe("GET", () => {
         .get("/api/reviews/slippers/comments")
         .expect(400)
         .then((res) => {
-          expect(res.body.msg).toBe("Invalid Id");
+          expect(res.body.msg).toBe("Invalid Id or Query value");
         });
     });
     test("GET 404 - /api/reviews/:review_id/comments | returns no comment array and correct error message if id valid but out of bounds", () => {
@@ -372,6 +393,22 @@ describe("GET", () => {
         .expect(400)
         .then((res) => {
           expect(res.body.msg).toBe("Bad query");
+        });
+    });
+    test("GET 400 - /api/reviews/:review_id/comments?query | invalid limit", () => {
+      return request(app)
+        .get("/api/reviews/2/comments?limit=time")
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Invalid Id or Query value");
+        });
+    });
+    test("GET 400 - /api/reviews/:review_id/comments?query | invalid limit", () => {
+      return request(app)
+        .get("/api/reviews/2/comments?p=time")
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Invalid Id or Query value");
         });
     });
     test('"GET 404: /api/users/:username | username not found', () => {
@@ -438,7 +475,7 @@ describe("POST", () => {
         })
         .expect(400)
         .then((res) => {
-          expect(res.body.msg).toBe("Invalid Id");
+          expect(res.body.msg).toBe("Invalid Id or Query value");
         });
     });
     test("POST 404 - /api/reviews/:review_id/comments | valid id but out of bounds", () => {
@@ -631,7 +668,7 @@ describe("PATCH", () => {
         .send({ inc_votes: 1 })
         .expect(400)
         .then((res) => {
-          expect(res.body.msg).toBe("Invalid Id");
+          expect(res.body.msg).toBe("Invalid Id or Query value");
         });
     });
     test("PATCH 404 - /api/reviews/:review_id | valid id but out of bounds", () => {
@@ -677,7 +714,7 @@ describe("PATCH", () => {
       .send({ inc_votes: 1 })
       .expect(400)
       .then((res) => {
-        expect(res.body.msg).toBe("Invalid Id");
+        expect(res.body.msg).toBe("Invalid Id or Query value");
       });
   });
   test("PATCH 404 - /api/comments/:comment_id | valid id but out of bounds", () => {
@@ -730,7 +767,7 @@ describe("DELETE", () => {
         .delete("/api/comments/samwise")
         .expect(400)
         .then((res) => {
-          expect(res.body.msg).toBe("Invalid Id");
+          expect(res.body.msg).toBe("Invalid Id or Query value");
         });
     });
     test("DELETE 404 - /api/comments/:comment_id | valid id but out of bounds", () => {
