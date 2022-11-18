@@ -18,6 +18,7 @@ exports.getReviews = (req, res, next) => {
 
 exports.getReviewById = (req, res, next) => {
   const { review_id } = req.params;
+
   selectReviewById(review_id)
     .then((review) => {
       res.status(200).send({ review });
@@ -49,6 +50,7 @@ exports.postCommentToReview = (req, res, next) => {
 exports.patchReviewVote = (req, res, next) => {
   const { review_id } = req.params;
   const { inc_votes } = req.body;
+
   updateReviewVote(review_id, inc_votes)
     .then((review) => {
       res.status(200).send({ review });
@@ -66,6 +68,7 @@ exports.postReview = (req, res, next) => {
 
 exports.deleteReview = (req, res, next) => {
   const { review_id } = req.params;
+
   removeReview(review_id)
     .then(() => {
       res.status(204).send();

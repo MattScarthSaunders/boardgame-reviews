@@ -26,14 +26,12 @@ exports.selectReviews = (queries) => {
   ];
 
   //check if endpoint queries are valid
-  if (
-    !queryKeys.every((key) => validQueries.includes(key)) || //query
-    !validSorts.includes(sort_by) || //sort_by value
-    (order !== "desc" && order !== "asc") || // order value
-    !parseInt(limit) || //limit value
-    !/[0-9]/g.test(p) //page value
-  ) {
+  if (!queryKeys.every((key) => validQueries.includes(key))) {
     return Promise.reject({ status: 400, msg: "Bad query" });
+  }
+
+  if (!validSorts.includes(sort_by) || (order !== "desc" && order !== "asc")) {
+    return Promise.reject({ status: 400, msg: "Invalid Id or Query value" });
   }
 
   //assemble psql query

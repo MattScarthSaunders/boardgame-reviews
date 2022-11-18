@@ -360,7 +360,7 @@ describe("GET", () => {
         .get("/api/reviews?sort_by=diplodocus")
         .expect(400)
         .then((res) => {
-          expect(res.body.msg).toBe("Bad query");
+          expect(res.body.msg).toBe("Invalid Id or Query value");
         });
     });
     test("GET 400 - /api/reviews?query | invalid order", () => {
@@ -368,7 +368,7 @@ describe("GET", () => {
         .get("/api/reviews?order=sideways")
         .expect(400)
         .then((res) => {
-          expect(res.body.msg).toBe("Bad query");
+          expect(res.body.msg).toBe("Invalid Id or Query value");
         });
     });
     test("GET 400 - /api/reviews?query | query typo", () => {
@@ -384,7 +384,7 @@ describe("GET", () => {
         .get("/api/reviews?limit=time")
         .expect(400)
         .then((res) => {
-          expect(res.body.msg).toBe("Bad query");
+          expect(res.body.msg).toBe("Invalid Id or Query value");
         });
     });
     test("GET 400 - /api/reviews?query | invalid p", () => {
@@ -392,7 +392,7 @@ describe("GET", () => {
         .get("/api/reviews?p=time")
         .expect(400)
         .then((res) => {
-          expect(res.body.msg).toBe("Bad query");
+          expect(res.body.msg).toBe("Invalid Id or Query value");
         });
     });
     test("GET 400 - /api/reviews/:review_id/comments?query | invalid limit", () => {
