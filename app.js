@@ -7,8 +7,11 @@ const {
   invalidIdOrQuery,
 } = require("./_controllers/errors.controllers.js");
 const apiRouter = require("./_routes/api.routers.js");
+const cors = require("cors");
 
 const app = express();
+
+app.use(cors());
 app.use(express.json());
 
 app.use("/api", apiRouter);
