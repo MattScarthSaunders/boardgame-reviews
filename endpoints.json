@@ -134,7 +134,13 @@
   "POST /api/reviews/": {
     "description": "posts a new review, serves review back",
     "queries": [],
-    "example body": { "username": "mallionaire", "body": "5/7 perfect game" },
+    "example body": {
+      "owner": "mallionaire",
+      "title": "Risk",
+      "review_body": "Colonial era military strategy on the tabletop!",
+      "designer": "Albert Lamorisse",
+      "category": "euro game"
+    },
     "example response": {
       "review": {
         "review_id": 2,
