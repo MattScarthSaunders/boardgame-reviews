@@ -8,7 +8,7 @@ on:
 env:
   PG_DATABASE: ${{secrets.bg-pg-db}}
   DATABASE_URL: ${{secrets.bg-db-url}}
-  NODE_ENV: "production"
+
 jobs:
   seed-db:
     runs-on: ubuntu-latest
