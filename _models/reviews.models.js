@@ -52,7 +52,7 @@ exports.selectReviews = (queries) => {
     queryArray.push(checkExists("categories", "slug", category));
   }
 
-  queryString += `GROUP BY reviews.review_id
+  queryString += ` GROUP BY reviews.review_id
                   ORDER BY ${sort_by} ${order}
                   LIMIT $1 OFFSET $2`;
 
