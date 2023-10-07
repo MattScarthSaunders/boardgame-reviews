@@ -55,3 +55,14 @@ or, if you just want to run the endpoint tests, enter:
 ```
 npm t app.test.js
 ```
+
+# Environment
+
+Environment variables needed to perform all actions:
+
+```
+export PGDATABASE='<db name>'
+export DATABASE_URL='<url for hosting a db>' (optional - if hosting locally you don't need this)
+```
+
+Once these are set, run `npm run seed-prod` to seed your hosted db.
