@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install deps
-        run: npm ci
+        run: npm i
 
       - name: seed
         run: npm run seed-prod
