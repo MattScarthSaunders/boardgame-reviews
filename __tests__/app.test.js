@@ -5,7 +5,7 @@ const data = require("../db/data/test-data");
 const db = require("../db/connection.js");
 const endPointJsonData = require("../endpoints.json");
 
-beforeEach(() => {
+beforeAll(() => {
   return seed(data);
 });
 
@@ -686,31 +686,37 @@ describe("PATCH", () => {
         });
     });
     test("PATCH 200 - /api/reviews/:review_id | should handle negative values", () => {
-      return request(app)
-        .patch("/api/reviews/1")
-        .send({ inc_votes: -100 })
-        .expect(200)
-        .then((res) => {
-          expect(res.body.review.votes).toBe(-99);
-        });
+      return seed(data).then(() => {
+        return request(app)
+          .patch("/api/reviews/1")
+          .send({ inc_votes: -100 })
+          .expect(200)
+          .then((res) => {
+            expect(res.body.review.votes).toBe(-99);
+          });
+      });
     });
     test("PATCH 200 - /api/comments/:comment_id | should update vote count of given comment", () => {
-      return request(app)
-        .patch("/api/comments/1")
-        .send({ inc_votes: 2 })
-        .expect(200)
-        .then((res) => {
-          expect(res.body.comment.votes).toBe(18);
-        });
+      return seed(data).then(() => {
+        return request(app)
+          .patch("/api/comments/1")
+          .send({ inc_votes: 2 })
+          .expect(200)
+          .then((res) => {
+            expect(res.body.comment.votes).toBe(18);
+          });
+      });
     });
     test("PATCH 200 - /api/comments/:comment_id | should handle negatives", () => {
-      return request(app)
-        .patch("/api/comments/1")
-        .send({ inc_votes: -2 })
-        .expect(200)
-        .then((res) => {
-          expect(res.body.comment.votes).toBe(14);
-        });
+      return seed(data).then(() => {
+        return request(app)
+          .patch("/api/comments/1")
+          .send({ inc_votes: -2 })
+          .expect(200)
+          .then((res) => {
+            expect(res.body.comment.votes).toBe(14);
+          });
+      });
     });
   });
   describe("Errors", () => {
