@@ -6,8 +6,8 @@ on:
   #   - cron: '*/5 * * * *'
 
 env:
-  PG_DATABASE: ${{secrets.bg-pg-db}}
-  DATABASE_URL: ${{secrets.bg-db-url}}
+  PGDATABASE: ${{secrets.PGDATABASE}}
+  DATABASE_URL: ${{secrets.DATABASE_URL}}
 
 jobs:
   seed-db:
