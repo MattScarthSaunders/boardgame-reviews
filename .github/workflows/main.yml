@@ -2,8 +2,8 @@ name: "seed-prod"
 
 on:
   workflow_dispatch:
-  # schedule:
-  #   - cron: '*/5 * * * *'
+  schedule:
+    - cron: "0 0 * * *"
 
 env:
   PGDATABASE: ${{secrets.PGDATABASE}}
